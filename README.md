@@ -26,8 +26,8 @@ Ein moderner Ewiger Kalender im iOS 26 Liquid Glass Design.
 - Jeder Monat hat genau **28 Tage**
 - Jedes Jahr beginnt mit **Aurora** am 1. Januar
 - Jeder Monat beginnt am **Montag**
-- **Unara** = 30. Dezember (letzter Tag des Jahres, außerhalb aller Monate)
-- **Intera** = 31. Dezember (nur im Schaltjahr)
+- **Unara** = letzter Tag des Jahres, außerhalb aller Monate
+- **Intera** = letzter Tag im Schaltjahr
 
 ## Deployment
 
