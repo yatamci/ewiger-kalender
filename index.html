@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ewiger Kalender</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- Background orbs -->
+
+  <div class="bg-orb orb-1"></div>
+  <div class="bg-orb orb-2"></div>
+  <div class="bg-orb orb-3"></div>
+  <div class="bg-orb orb-4"></div>
+
+  <div class="app-container">
+
+```
+<!-- Header -->
+<header class="glass-header">
+  <div class="header-inner">
+    <div class="header-title">
+      <span class="header-icon">☀️</span>
+      <h1>Ewiger Kalender</h1>
+    </div>
+    <p class="header-sub">28 Tage · 13 Monate · Immer gleich</p>
+  </div>
+  <nav class="tab-nav">
+    <button class="tab-btn active" data-tab="heute">Heute</button>
+    <button class="tab-btn" data-tab="konverter">Konverter</button>
+    <button class="tab-btn" data-tab="jahres">Jahresübersicht</button>
+  </nav>
+</header>
+
+<!-- Tab: Heute -->
+<section class="tab-content active" id="tab-heute">
+  <div class="today-card glass-card">
+    <div class="today-gregorian">
+      <span class="today-label">Gregorianisch</span>
+      <span class="today-date-greg" id="greg-today"></span>
+    </div>
+    <div class="today-arrow">⟷</div>
+    <div class="today-ewig">
+      <span class="today-label">Ewiger Kalender</span>
+      <div class="today-ewig-main" id="ewig-today-main"></div>
+      <div class="today-ewig-season" id="ewig-today-season"></div>
+    </div>
+  </div>
+  <div class="month-detail-card glass-card" id="today-month-detail"></div>
+</section>
+
+<!-- Tab: Konverter -->
+<section class="tab-content" id="tab-konverter">
+  <div class="converter-wrap">
+
+    <div class="converter-block glass-card">
+      <h2 class="converter-title">Gregorianisch → Ewig</h2>
+      <div class="input-group">
+        <label>Datum eingeben</label>
+        <input type="date" id="greg-input" class="glass-input" />
+      </div>
+      <button class="glass-btn primary" id="btn-greg-to-ewig">Umrechnen →</button>
+      <div class="result-box" id="result-greg-to-ewig"></div>
+    </div>
+
+    <div class="converter-divider">⟷</div>
+
+    <div class="converter-block glass-card">
+      <h2 class="converter-title">Ewig → Gregorianisch</h2>
+      <div class="input-group">
+        <label>Jahr</label>
+        <input type="number" id="ewig-year" class="glass-input" placeholder="2024" min="1" max="9999" />
+      </div>
+      <div class="input-group">
+        <label>Monat</label>
+        <select id="ewig-month" class="glass-input glass-select">
+          <option value="">– Monat wählen –</option>
+          <option value="1">1 – Aurora (Morgenröte)</option>
+          <option value="2">2 – Floris (Blütezeit)</option>
+          <option value="3">3 – Viridia (Grünwerden)</option>
+          <option value="4">4 – Solara (Sonnenaufbruch)</option>
+          <option value="5">5 – Crescera (Wachstum)</option>
+          <option value="6">6 – Luminis (Lichtzeit)</option>
+          <option value="7">7 – Aestas (Hochsommer)</option>
+          <option value="8">8 – Helion (Sonnenhöhe)</option>
+          <option value="9">9 – Fructa (Ernte)</option>
+          <option value="10">10 – Aurelia (Goldzeit)</option>
+          <option value="11">11 – Ventis (Windzeit)</option>
+          <option value="12">12 – Nivara (Schneezeit)</option>
+          <option value="13">13 – Noctis (Dunkelzeit)</option>
+          <option value="0">Unara / Intera (Jahrestag)</option>
+        </select>
+      </div>
+      <div class="input-group" id="ewig-day-group">
+        <label>Tag</label>
+        <input type="number" id="ewig-day" class="glass-input" placeholder="1-28" min="1" max="28" />
+      </div>
+      <button class="glass-btn primary" id="btn-ewig-to-greg">Umrechnen →</button>
+      <div class="result-box" id="result-ewig-to-greg"></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- Tab: Jahresübersicht -->
+<section class="tab-content" id="tab-jahres">
+  <div class="year-controls glass-card">
+    <button class="glass-btn icon-btn" id="btn-year-prev">‹</button>
+    <div class="year-display">
+      <span id="year-label">2024</span>
+      <span class="year-sub" id="year-leap-label"></span>
+    </div>
+    <button class="glass-btn icon-btn" id="btn-year-next">›</button>
+  </div>
+  <div class="year-grid" id="year-grid"></div>
+</section>
+```
+
+  </div>
+
+  <!-- Popup -->
+
+  <div class="popup-overlay" id="popup-overlay">
+    <div class="popup-card glass-card" id="popup-card">
+      <button class="popup-close" id="popup-close">✕</button>
+      <div id="popup-content"></div>
+    </div>
+  </div>
+
+  <script src="calendar.js"></script>
+
+</body>
+</html>
