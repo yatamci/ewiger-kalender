@@ -1,0 +1,906 @@
+/* ============================================================
+   EWIGER KALENDER – iOS 26 Liquid Glass Design System
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');
+
+/* ---- CSS Variables ---- */
+:root {
+  /* Glass */
+  --glass-bg: rgba(255, 255, 255, 0.18);
+  --glass-bg-strong: rgba(255, 255, 255, 0.28);
+  --glass-border: rgba(255, 255, 255, 0.45);
+  --glass-shadow: 0 8px 32px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06);
+  --glass-shadow-lg: 0 20px 60px rgba(0,0,0,0.18), 0 4px 16px rgba(0,0,0,0.08);
+  --glass-blur: blur(20px) saturate(180%);
+
+  /* Text */
+  --text-primary: #1a1a2e;
+  --text-secondary: rgba(26,26,46,0.65);
+  --text-light: rgba(26,26,46,0.45);
+
+  /* Seasons */
+  --spring-bg: linear-gradient(135deg, #f8f9e8 0%, #e8f5e9 30%, #fce4ec 70%, #f3e5f5 100%);
+  --spring-accent: #66bb6a;
+  --spring-deep: #2e7d32;
+  --spring-glass: rgba(102, 187, 106, 0.15);
+  --spring-border: rgba(102, 187, 106, 0.35);
+  --spring-text: #1b5e20;
+
+  --summer-bg: linear-gradient(135deg, #fffde7 0%, #fff8e1 40%, #fff3e0 100%);
+  --summer-accent: #ffa726;
+  --summer-deep: #e65100;
+  --summer-glass: rgba(255, 167, 38, 0.15);
+  --summer-border: rgba(255, 167, 38, 0.35);
+  --summer-text: #bf360c;
+
+  --autumn-bg: linear-gradient(135deg, #fbe9e7 0%, #fff3e0 40%, #fce4ec 100%);
+  --autumn-accent: #ef6c00;
+  --autumn-deep: #bf360c;
+  --autumn-glass: rgba(239, 108, 0, 0.15);
+  --autumn-border: rgba(239, 108, 0, 0.35);
+  --autumn-text: #bf360c;
+
+  --winter-bg: linear-gradient(135deg, #e8eaf6 0%, #ede7f6 40%, #e3f2fd 100%);
+  --winter-accent: #5c6bc0;
+  --winter-deep: #283593;
+  --winter-glass: rgba(92, 107, 192, 0.15);
+  --winter-border: rgba(92, 107, 192, 0.35);
+  --winter-text: #1a237e;
+
+  /* Body BG */
+  --body-bg: linear-gradient(135deg, #e8f4fd 0%, #f0e8fb 30%, #fde8f0 60%, #fdf5e8 100%);
+
+  --radius-sm: 12px;
+  --radius-md: 18px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
+}
+
+/* ---- Reset & Base ---- */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Nunito', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--body-bg);
+  min-height: 100vh;
+  color: var(--text-primary);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---- Background Orbs ---- */
+.bg-orb {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.45;
+  pointer-events: none;
+  z-index: 0;
+  animation: orb-drift 12s ease-in-out infinite alternate;
+}
+.orb-1 { width: 500px; height: 500px; background: radial-gradient(circle, #a8edea, #fed6e3); top: -100px; left: -150px; animation-delay: 0s; }
+.orb-2 { width: 400px; height: 400px; background: radial-gradient(circle, #ffecd2, #fcb69f); top: 40%; right: -100px; animation-delay: -3s; }
+.orb-3 { width: 350px; height: 350px; background: radial-gradient(circle, #d4fc79, #96e6a1); bottom: 10%; left: 20%; animation-delay: -6s; }
+.orb-4 { width: 300px; height: 300px; background: radial-gradient(circle, #a18cd1, #fbc2eb); bottom: -50px; right: 20%; animation-delay: -9s; }
+
+@keyframes orb-drift {
+  0%   { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(40px, 60px) scale(1.1); }
+}
+
+/* ---- App Layout ---- */
+.app-container {
+  position: relative;
+  z-index: 1;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 20px 16px 80px;
+}
+
+/* ---- Glass Card ---- */
+.glass-card {
+  background: var(--glass-bg-strong);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1.5px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--glass-shadow);
+  transition: box-shadow 0.3s ease, transform 0.2s ease;
+}
+.glass-card:hover {
+  box-shadow: var(--glass-shadow-lg);
+}
+
+/* ---- Header ---- */
+.glass-header {
+  background: rgba(255,255,255,0.28);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1.5px solid var(--glass-border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--glass-shadow-lg);
+  padding: 24px 28px 0;
+  margin-bottom: 24px;
+  overflow: hidden;
+}
+
+.header-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding-bottom: 20px;
+}
+
+.header-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.header-icon {
+  font-size: 2rem;
+  filter: drop-shadow(0 2px 8px rgba(255,180,0,0.4));
+}
+
+h1 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(1.8rem, 5vw, 2.8rem);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  background: linear-gradient(135deg, #2d3436, #636e72, #2d3436);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.header-sub {
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+/* ---- Tab Nav ---- */
+.tab-nav {
+  display: flex;
+  border-top: 1px solid rgba(255,255,255,0.4);
+  margin: 0 -28px;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 14px 8px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--text-secondary);
+  transition: all 0.25s ease;
+  position: relative;
+}
+
+.tab-btn::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 50%;
+  transform: translateX(-50%) scaleX(0);
+  width: 60%; height: 3px;
+  border-radius: 3px 3px 0 0;
+  background: linear-gradient(90deg, #667eea, #764ba2);
+  transition: transform 0.25s ease;
+}
+
+.tab-btn.active {
+  color: var(--text-primary);
+}
+
+.tab-btn.active::after {
+  transform: translateX(-50%) scaleX(1);
+}
+
+/* ---- Tab Content ---- */
+.tab-content {
+  display: none;
+  animation: fade-in 0.4s ease;
+}
+.tab-content.active { display: block; }
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================================
+   TODAY TAB
+   ============================================================ */
+
+.today-card {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 20px;
+  padding: 28px 32px;
+  margin-bottom: 20px;
+}
+
+.today-gregorian, .today-ewig {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.today-gregorian { align-items: flex-start; }
+.today-ewig { align-items: flex-end; }
+
+.today-label {
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-light);
+}
+
+.today-date-greg {
+  font-size: clamp(0.95rem, 2.5vw, 1.15rem);
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.4;
+}
+
+.today-arrow {
+  font-size: 1.8rem;
+  color: var(--text-light);
+  user-select: none;
+}
+
+.ewig-day-display {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  border-radius: var(--radius-md);
+}
+
+.ewig-day-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.ewig-month-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ewig-month-name {
+  font-size: 1.05rem;
+  font-weight: 800;
+}
+
+.ewig-month-sub {
+  font-size: 0.75rem;
+  font-weight: 500;
+  opacity: 0.7;
+}
+
+.ewig-special {
+  font-size: 1.4rem;
+  font-weight: 700;
+  padding: 10px 16px;
+  border-radius: var(--radius-md);
+  display: block;
+}
+
+.season-tag {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  padding: 5px 12px;
+  border-radius: 20px;
+  display: inline-block;
+}
+
+/* Season colors on elements */
+.season-spring { background: var(--spring-glass); border: 1px solid var(--spring-border); color: var(--spring-text); }
+.season-summer { background: var(--summer-glass); border: 1px solid var(--summer-border); color: var(--summer-text); }
+.season-autumn { background: var(--autumn-glass); border: 1px solid var(--autumn-border); color: var(--autumn-text); }
+.season-winter { background: var(--winter-glass); border: 1px solid var(--winter-border); color: var(--winter-text); }
+
+/* Month detail card */
+.month-detail-card {
+  padding: 24px;
+}
+
+.month-detail-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.month-detail-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  border-radius: var(--radius-sm);
+  font-weight: 800;
+  font-size: 1rem;
+}
+
+.month-detail-sub {
+  font-size: 0.78rem;
+  opacity: 0.7;
+  font-weight: 500;
+}
+
+.month-detail-info {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+  padding: 0 4px;
+}
+
+/* Mini calendar */
+.mini-cal {
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: rgba(255,255,255,0.3);
+  border: 1px solid rgba(255,255,255,0.5);
+}
+
+.mini-cal-header {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  background: rgba(255,255,255,0.4);
+  padding: 6px 4px;
+}
+
+.mini-cal-header span {
+  text-align: center;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: var(--text-secondary);
+}
+
+.mini-cal-body {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+  padding: 6px 4px;
+}
+
+.mini-cal-body span {
+  text-align: center;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 5px 0;
+  border-radius: 8px;
+  color: var(--text-secondary);
+  cursor: default;
+}
+
+.mini-cal-body span.highlight {
+  font-weight: 900;
+  color: white;
+}
+.mini-cal-body span.highlight.spring { background: var(--spring-accent); }
+.mini-cal-body span.highlight.summer { background: var(--summer-accent); }
+.mini-cal-body span.highlight.autumn { background: var(--autumn-accent); }
+.mini-cal-body span.highlight.winter { background: var(--winter-accent); }
+
+.special-day-info {
+  text-align: center;
+  padding: 20px;
+}
+.special-icon { font-size: 3rem; margin-bottom: 10px; }
+.special-day-info h3 { font-size: 1.4rem; font-weight: 800; margin-bottom: 8px; }
+.special-day-info p { color: var(--text-secondary); font-size: 0.88rem; }
+.special-desc { margin-top: 8px; }
+
+/* ============================================================
+   CONVERTER TAB
+   ============================================================ */
+
+.converter-wrap {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+.converter-block {
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.converter-title {
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: var(--text-primary);
+}
+
+.converter-divider {
+  font-size: 1.8rem;
+  color: var(--text-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 80px;
+  user-select: none;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.input-group label {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.glass-input {
+  width: 100%;
+  padding: 12px 16px;
+  background: rgba(255,255,255,0.4);
+  backdrop-filter: blur(10px);
+  border: 1.5px solid rgba(255,255,255,0.6);
+  border-radius: var(--radius-sm);
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.glass-input:focus {
+  border-color: rgba(102, 126, 234, 0.6);
+  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.12);
+  background: rgba(255,255,255,0.55);
+}
+
+.glass-select {
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23636e72' stroke-width='2' fill='none'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 40px;
+}
+
+/* Buttons */
+.glass-btn {
+  padding: 12px 24px;
+  background: rgba(255,255,255,0.35);
+  backdrop-filter: blur(10px);
+  border: 1.5px solid rgba(255,255,255,0.55);
+  border-radius: var(--radius-sm);
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  letter-spacing: 0.04em;
+}
+
+.glass-btn:hover {
+  background: rgba(255,255,255,0.55);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+}
+
+.glass-btn:active { transform: translateY(0); }
+
+.glass-btn.primary {
+  background: linear-gradient(135deg, rgba(102,126,234,0.85), rgba(118,75,162,0.85));
+  border-color: rgba(255,255,255,0.4);
+  color: white;
+  letter-spacing: 0.06em;
+}
+
+.glass-btn.primary:hover {
+  background: linear-gradient(135deg, rgba(102,126,234,1), rgba(118,75,162,1));
+  box-shadow: 0 8px 24px rgba(102,126,234,0.3);
+}
+
+.glass-btn.icon-btn {
+  padding: 10px 18px;
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+/* Result boxes */
+.result-box {
+  padding: 0;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease, padding 0.3s ease, opacity 0.3s ease;
+  opacity: 0;
+  border-radius: var(--radius-sm);
+}
+
+.result-box.show {
+  max-height: 200px;
+  padding: 16px;
+  opacity: 1;
+  background: rgba(255,255,255,0.35);
+  border: 1.5px solid rgba(255,255,255,0.55);
+}
+
+.result-big {
+  font-size: 1.05rem;
+  font-weight: 800;
+  margin-bottom: 4px;
+}
+
+.result-sub {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.result-season {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+
+.result-main {
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+}
+
+.result-main.season-spring { background: var(--spring-glass); }
+.result-main.season-summer { background: var(--summer-glass); }
+.result-main.season-autumn { background: var(--autumn-glass); }
+.result-main.season-winter { background: var(--winter-glass); }
+
+.result-special { text-align: center; }
+
+/* ============================================================
+   YEAR OVERVIEW TAB
+   ============================================================ */
+
+.year-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  padding: 18px 28px;
+  margin-bottom: 24px;
+}
+
+.year-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-width: 120px;
+}
+
+#year-label {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.year-sub {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  letter-spacing: 0.06em;
+}
+
+/* Season sections */
+.year-season-section {
+  margin-bottom: 28px;
+}
+
+.season-section-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 10px 4px;
+  margin-bottom: 12px;
+  color: var(--text-secondary);
+}
+
+.season-section-spring .season-section-header { color: var(--spring-deep); }
+.season-section-summer .season-section-header { color: var(--summer-deep); }
+.season-section-autumn .season-section-header { color: var(--autumn-deep); }
+.season-section-winter .season-section-header { color: var(--winter-deep); }
+
+.year-months-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 14px;
+}
+
+.year-month-card {
+  padding: 16px;
+}
+
+.year-month-card.month-spring { border-color: var(--spring-border); }
+.year-month-card.month-summer { border-color: var(--summer-border); }
+.year-month-card.month-autumn { border-color: var(--autumn-border); }
+.year-month-card.month-winter { border-color: var(--winter-border); }
+
+.year-month-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  font-weight: 800;
+  font-size: 0.88rem;
+}
+
+.year-month-sub {
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.year-cal-header {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  margin-bottom: 4px;
+}
+
+.year-cal-header span {
+  text-align: center;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: var(--text-light);
+  padding: 3px 0;
+}
+
+.year-cal-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+
+.year-day {
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 5px 2px;
+  border-radius: 7px;
+  cursor: pointer;
+  color: var(--text-secondary);
+  transition: all 0.18s ease;
+  user-select: none;
+}
+
+.year-day:hover {
+  background: rgba(255,255,255,0.6);
+  color: var(--text-primary);
+  transform: scale(1.12);
+}
+
+.month-spring .year-day.today { background: var(--spring-accent); color: white; font-weight: 900; }
+.month-summer .year-day.today { background: var(--summer-accent); color: white; font-weight: 900; }
+.month-autumn .year-day.today { background: var(--autumn-accent); color: white; font-weight: 900; }
+.month-winter .year-day.today { background: var(--winter-accent); color: white; font-weight: 900; }
+
+.year-special-card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+  justify-content: center;
+  min-height: 130px;
+  text-align: center;
+}
+
+.special-day-btn {
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  transition: transform 0.2s;
+}
+.special-day-btn:hover { transform: scale(1.08); }
+
+.special-day-circle {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--winter-glass);
+  border: 1.5px solid var(--winter-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Playfair Display', serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--winter-text);
+}
+
+.special-day-label {
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+/* ============================================================
+   POPUP
+   ============================================================ */
+
+.popup-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.3);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.popup-overlay.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.popup-card {
+  max-width: 380px;
+  width: 100%;
+  padding: 28px;
+  position: relative;
+  animation: popup-in 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes popup-in {
+  from { opacity: 0; transform: scale(0.85) translateY(20px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.popup-close {
+  position: absolute;
+  top: 14px; right: 16px;
+  background: rgba(0,0,0,0.08);
+  border: none;
+  border-radius: 50%;
+  width: 30px; height: 30px;
+  cursor: pointer;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.2s;
+}
+.popup-close:hover { background: rgba(0,0,0,0.15); }
+
+.popup-ewig {
+  text-align: center;
+  padding: 20px;
+  border-radius: var(--radius-md);
+  margin-bottom: 16px;
+}
+
+.popup-month-badge {
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.popup-day-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 4rem;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.popup-month-sub {
+  font-size: 0.8rem;
+  opacity: 0.7;
+  font-weight: 500;
+}
+
+.popup-greg {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  margin-top: 8px;
+  font-weight: 600;
+}
+
+.popup-details {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.popup-detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background: rgba(255,255,255,0.3);
+  border-radius: var(--radius-sm);
+  font-size: 0.82rem;
+}
+
+.popup-detail-row span:first-child {
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.popup-detail-row span:last-child {
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.popup-special { text-align: center; }
+.popup-icon { font-size: 3.5rem; margin-bottom: 12px; }
+.popup-special h3 { font-size: 1.5rem; font-weight: 800; margin-bottom: 8px; }
+.popup-special p { color: var(--text-secondary); font-size: 0.88rem; }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 768px) {
+  .today-card {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    padding: 20px;
+  }
+  .today-gregorian, .today-ewig { align-items: center; }
+  .today-arrow { display: none; }
+
+  .converter-wrap {
+    grid-template-columns: 1fr;
+  }
+  .converter-divider { padding-top: 0; font-size: 1.2rem; }
+
+  .year-months-row {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .glass-header { padding: 20px 18px 0; }
+  .header-inner { padding-bottom: 16px; }
+}
+
+@media (max-width: 480px) {
+  .year-months-row {
+    grid-template-columns: 1fr;
+  }
+  .tab-btn { font-size: 0.78rem; padding: 12px 4px; }
+}
