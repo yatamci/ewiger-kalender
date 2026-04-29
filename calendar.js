@@ -1,267 +1,145 @@
 // ============================================================
-// EWIGER KALENDER - Calendar Logic & UI
+// EWIGER KALENDER - Kalenderlogik & UI
 // ============================================================
 
 const MONTHS = [
-  { num: 1,  name: "Aurora",   sub: "Morgenröte",    season: "spring", emoji: "🌸" },
-  { num: 2,  name: "Floris",   sub: "Blütezeit",     season: "spring", emoji: "🌸" },
-  { num: 3,  name: "Viridia",  sub: "Grünwerden",    season: "spring", emoji: "🌿" },
-  { num: 4,  name: "Solara",   sub: "Sonnenaufbruch",season: "summer", emoji: "☀️" },
-  { num: 5,  name: "Crescera", sub: "Wachstum",      season: "summer", emoji: "☀️" },
-  { num: 6,  name: "Luminis",  sub: "Lichtzeit",     season: "summer", emoji: "🌞" },
-  { num: 7,  name: "Aestas",   sub: "Hochsommer",    season: "summer", emoji: "🌻" },
-  { num: 8,  name: "Helion",   sub: "Sonnenhöhe",    season: "autumn", emoji: "🍂" },
-  { num: 9,  name: "Fructa",   sub: "Ernte",         season: "autumn", emoji: "🍁" },
-  { num: 10, name: "Aurelia",  sub: "Goldzeit",      season: "autumn", emoji: "🍂" },
-  { num: 11, name: "Ventis",   sub: "Windzeit",      season: "winter", emoji: "❄️" },
-  { num: 12, name: "Nivara",   sub: "Schneezeit",    season: "winter", emoji: "🌨️" },
-  { num: 13, name: "Noctis",   sub: "Dunkelzeit",    season: "winter", emoji: "❄️" },
+  { num: 1,  name: "Aurora",   sub: "Morgenröte",     season: "spring", emoji: "🌸" },
+  { num: 2,  name: "Floris",   sub: "Blütezeit",      season: "spring", emoji: "🌸" },
+  { num: 3,  name: "Viridia",  sub: "Grünwerden",     season: "spring", emoji: "🌿" },
+  { num: 4,  name: "Solara",   sub: "Sonnenaufbruch", season: "summer", emoji: "☀️" },
+  { num: 5,  name: "Crescera", sub: "Wachstum",       season: "summer", emoji: "☀️" },
+  { num: 6,  name: "Luminis",  sub: "Lichtzeit",      season: "summer", emoji: "🌞" },
+  { num: 7,  name: "Aestas",   sub: "Hochsommer",     season: "summer", emoji: "🌻" },
+  { num: 8,  name: "Helion",   sub: "Sonnenhöhe",     season: "autumn", emoji: "🍂" },
+  { num: 9,  name: "Fructa",   sub: "Ernte",          season: "autumn", emoji: "🍁" },
+  { num: 10, name: "Aurelia",  sub: "Goldzeit",       season: "autumn", emoji: "🍂" },
+  { num: 11, name: "Ventis",   sub: "Windzeit",       season: "winter", emoji: "❄️" },
+  { num: 12, name: "Nivara",   sub: "Schneezeit",     season: "winter", emoji: "🌨️" },
+  { num: 13, name: "Noctis",   sub: "Dunkelzeit",     season: "winter", emoji: "❄️" },
 ];
 
-const SEASONS = {
-  spring: { label: "Frühling", emoji: "🌸", color: "spring" },
-  summer: { label: "Sommer",   emoji: "☀️", color: "summer" },
-  autumn: { label: "Herbst",   emoji: "🍂", color: "autumn" },
-  winter: { label: "Winter",   emoji: "❄️", color: "winter" },
-};
+const WEEKDAY_NAMES = ["Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samstag","Sonntag"];
+const WEEKDAYS_SHORT = ["Mo","Di","Mi","Do","Fr","Sa","So"];
 
-const WEEKDAYS = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"];
-
-// Day 1 of Ewiger Kalender (Aurora 1) = January 1 of each year
-// The Ewiger Kalender always starts on Monday.
-// Each month has exactly 28 days. 13*28 = 364 days.
-// Day 365 = Unara (timeless day, not part of any month)
-// Leap year: day 366 = Intera
-
+// ---- Schaltjahrberechnung ----
 function isLeapYear(year) {
   return (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
 }
 
-// Convert Gregorian date to Ewiger Kalender
-// Returns { year, month (1-13 or 0=special), day (1-28 or 1 for special), monthName, dayName, season, isUnara, isIntera }
+// ---- Gregorianisch → Ewig ----
+// Struktur: { year, month (1-13 | 0=Sondertag), day (1-28 | 1=Unara | 2=Intera),
+//             monthName, monthSub, season, emoji, weekday (0-6 = Mo-So),
+//             isUnara, isIntera }
 function gregToEwig(date) {
   const year = date.getFullYear();
-  const startOfYear = new Date(year, 0, 1); // Jan 1
-  const dayOfYear = Math.floor((date - startOfYear) / 86400000) + 1; // 1-based
-
+  const startOfYear = new Date(year, 0, 1);
+  // dayOfYear: 1-basiert
+  const dayOfYear = Math.floor((date - startOfYear) / 86400000) + 1;
   const leap = isLeapYear(year);
-  const yearDays = leap ? 366 : 365;
 
-  // Special days
-  if (dayOfYear === 365 && !leap) {
-    // Unara (non-leap year, last day)
-    return { year, month: 0, day: 1, monthName: "Unara", dayName: "Unara", season: "winter", isUnara: true, isIntera: false };
+  // Sondertage am ENDE des Jahres:
+  // Tag 365 (normales Jahr) = Unara
+  // Tag 365 (Schaltjahr)    = Unara
+  // Tag 366 (Schaltjahr)    = Intera
+  // Reguläre Tage: 1..364
+
+  if (!leap && dayOfYear === 365) {
+    return { year, month: 0, day: 1, monthName: "Unara", monthSub: "Zeitloser Tag",
+             season: "winter", emoji: "✨", isUnara: true, isIntera: false };
   }
-  if (dayOfYear === 365 && leap) {
-    // Unara in leap year (before Intera)
-    return { year, month: 0, day: 1, monthName: "Unara", dayName: "Unara", season: "winter", isUnara: true, isIntera: false };
+  if (leap && dayOfYear === 365) {
+    return { year, month: 0, day: 1, monthName: "Unara", monthSub: "Zeitloser Tag",
+             season: "winter", emoji: "✨", isUnara: true, isIntera: false };
   }
-  if (dayOfYear === 366 && leap) {
-    // Intera
-    return { year, month: 0, day: 2, monthName: "Intera", dayName: "Intera", season: "winter", isUnara: false, isIntera: true };
+  if (leap && dayOfYear === 366) {
+    return { year, month: 0, day: 2, monthName: "Intera", monthSub: "Schalttag",
+             season: "winter", emoji: "🌟", isUnara: false, isIntera: true };
   }
 
-  // Regular days: dayOfYear 1..364
-  const monthIndex = Math.floor((dayOfYear - 1) / 28); // 0-based (0..12)
+  // Regulärer Tag: dayOfYear 1..364
+  // monthIndex 0-basiert: 0=Aurora..12=Noctis
+  const monthIndex = Math.floor((dayOfYear - 1) / 28);
   const day = ((dayOfYear - 1) % 28) + 1; // 1..28
-  const monthData = MONTHS[monthIndex];
 
+  // Wochentag: Tag 1 jedes Monats = Montag (Index 0)
+  const weekday = (day - 1) % 7; // 0=Mo..6=So
+
+  const m = MONTHS[monthIndex];
   return {
     year,
-    month: monthData.num,
+    month: m.num,
     day,
-    monthName: monthData.name,
-    monthSub: monthData.sub,
-    dayName: `${monthData.name} ${day}`,
-    season: monthData.season,
-    emoji: monthData.emoji,
+    monthName: m.name,
+    monthSub: m.sub,
+    season: m.season,
+    emoji: m.emoji,
+    weekday,
     isUnara: false,
     isIntera: false,
   };
 }
 
-// Convert Ewiger Kalender to Gregorian
-// month: 1-13 (regular), 0 = Unara/Intera; day: 1-28 (or for month=0: 1=Unara, 2=Intera)
+// ---- Ewig → Gregorianisch ----
+// month 1-13 → regulär; month 0 day 1 → Unara; month 0 day 2 → Intera
 function ewigToGreg(year, month, day) {
   let dayOfYear;
-
   if (month === 0) {
-    // Special day
     dayOfYear = day === 2 ? 366 : 365;
   } else {
     dayOfYear = (month - 1) * 28 + day;
   }
-
   const startOfYear = new Date(year, 0, 1);
-  const result = new Date(startOfYear.getTime() + (dayOfYear - 1) * 86400000);
-  return result;
+  return new Date(startOfYear.getTime() + (dayOfYear - 1) * 86400000);
 }
 
-// Format Gregorian date nicely in German
+// ---- Formatierung ----
 function formatGreg(date) {
   return date.toLocaleDateString("de-DE", {
     weekday: "long", year: "numeric", month: "long", day: "numeric"
   });
 }
-
 function formatGregShort(date) {
   return date.toLocaleDateString("de-DE", {
     day: "2-digit", month: "2-digit", year: "numeric"
   });
 }
-
-// ============================================================
-// UI
-// ============================================================
-
-function seasonClass(season) {
-  return `season-${season}`;
+function formatGregMedium(date) {
+  return date.toLocaleDateString("de-DE", {
+    weekday: "long", day: "numeric", month: "long", year: "numeric"
+  });
 }
 
-// ---- Today Tab ----
+// ---- Ewig-Datum als lesbarer String ----
+// z.B. "Samstag, 2026 · Crescera 5"
+function formatEwig(ewig) {
+  if (ewig.isUnara) return `${ewig.year} · ✨ Unara`;
+  if (ewig.isIntera) return `${ewig.year} · 🌟 Intera`;
+  return `${WEEKDAY_NAMES[ewig.weekday]}, ${ewig.year} · ${ewig.emoji} ${ewig.monthName} ${ewig.day}`;
+}
+
+// ============================================================
+// UI – Heutiges Datum
+// ============================================================
+
 function renderToday() {
   const today = new Date();
-  today.setHours(0,0,0,0);
+  today.setHours(0, 0, 0, 0);
   const ewig = gregToEwig(today);
 
-  document.getElementById("greg-today").textContent = formatGreg(today);
-
-  const mainEl = document.getElementById("ewig-today-main");
-  const seasonEl = document.getElementById("ewig-today-season");
-  const detailEl = document.getElementById("today-month-detail");
-
-  if (ewig.isUnara || ewig.isIntera) {
-    mainEl.innerHTML = `<span class="ewig-special ${seasonClass("winter")}">${ewig.isIntera ? "🌟" : "✨"} ${ewig.monthName}</span>`;
-    seasonEl.innerHTML = `<span class="season-tag winter">❄️ Winter · ${ewig.year}</span>`;
-    detailEl.innerHTML = `
-      <div class="special-day-info">
-        <div class="special-icon">${ewig.isIntera ? "🌟" : "✨"}</div>
-        <h3>${ewig.monthName}</h3>
-        <p>${ewig.isIntera ? "Der Schalttag – nur alle 4 Jahre" : "Der zeitlose Tag – außerhalb aller Monate"}</p>
-        <p class="special-desc">Im Ewigen Kalender steht ${ewig.monthName} am Ende des Jahres, nach Noctis (Monat 13). Er gehört zu keinem Monat und zu keiner Woche.</p>
-      </div>`;
-    return;
-  }
-
-  const s = SEASONS[ewig.season];
-  mainEl.innerHTML = `
-    <div class="ewig-day-display ${seasonClass(ewig.season)}">
-      <span class="ewig-day-num">${ewig.day}</span>
-      <div class="ewig-month-info">
-        <span class="ewig-month-name">${ewig.emoji} ${ewig.monthName}</span>
-        <span class="ewig-month-sub">${ewig.monthSub}</span>
-      </div>
-    </div>`;
-  seasonEl.innerHTML = `<span class="season-tag ${ewig.season}">${s.emoji} ${s.label} · ${ewig.year} · Monat ${ewig.month}</span>`;
-
-  // Weekday in Ewiger Kalender: always starts Monday, day 1 of any month = Monday
-  const weekdayNames = ["Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samstag","Sonntag"];
-  const weekday = weekdayNames[(ewig.day - 1) % 7];
-  const week = Math.ceil(ewig.day / 7);
-
-  // Mini month calendar
-  detailEl.innerHTML = `
-    <div class="month-detail-inner">
-      <div class="month-detail-header ${seasonClass(ewig.season)}">
-        <span>${ewig.emoji} ${ewig.monthName}</span>
-        <span class="month-detail-sub">${ewig.monthSub}</span>
-      </div>
-      <div class="month-detail-info">
-        <span>${weekday}, Woche ${week}</span>
-        <span>Tag ${(ewig.month - 1) * 28 + ewig.day} des Jahres</span>
-      </div>
-      ${renderMiniMonth(ewig.month, ewig.day, ewig.season)}
-    </div>`;
-}
-
-function renderMiniMonth(month, highlightDay, season) {
-  const m = MONTHS[month - 1];
-  let html = `<div class="mini-cal">
-    <div class="mini-cal-header">${WEEKDAYS.map(d => `<span>${d}</span>`).join("")}</div>
-    <div class="mini-cal-body">`;
-  for (let d = 1; d <= 28; d++) {
-    const cls = d === highlightDay ? `highlight ${season}` : "";
-    html += `<span class="${cls}">${d}</span>`;
-  }
-  html += `</div></div>`;
-  return html;
-}
-
-// ---- Converter Tab ----
-function setupConverter() {
-  // Set default input to today
-  const today = new Date();
-  const todayStr = today.toISOString().split("T")[0];
-  document.getElementById("greg-input").value = todayStr;
-  document.getElementById("ewig-year").value = today.getFullYear();
-
-  document.getElementById("btn-greg-to-ewig").addEventListener("click", () => {
-    const val = document.getElementById("greg-input").value;
-    if (!val) return;
-    const date = new Date(val + "T00:00:00");
-    const ewig = gregToEwig(date);
-    const resultEl = document.getElementById("result-greg-to-ewig");
-
-    if (ewig.isUnara || ewig.isIntera) {
-      resultEl.innerHTML = `
-        <div class="result-special">
-          <div class="result-big">${ewig.isIntera ? "🌟" : "✨"} ${ewig.monthName}</div>
-          <div class="result-sub">Jahr ${ewig.year} · Zeitloser Tag</div>
-        </div>`;
-    } else {
-      const s = SEASONS[ewig.season];
-      resultEl.innerHTML = `
-        <div class="result-main season-${ewig.season}">
-          <div class="result-big">${ewig.emoji} ${ewig.monthName} ${ewig.day}</div>
-          <div class="result-sub">${ewig.monthSub} · Jahr ${ewig.year}</div>
-          <div class="result-season">${s.emoji} ${s.label} · Monat ${ewig.month} · Tag ${(ewig.month-1)*28+ewig.day}/364</div>
-        </div>`;
-    }
-    resultEl.classList.add("show");
+  // Gregorianisch: "Dienstag, 29. April 2026"
+  document.getElementById("greg-today").textContent = today.toLocaleDateString("de-DE", {
+    weekday: "long", day: "numeric", month: "long", year: "numeric"
   });
 
-  document.getElementById("btn-ewig-to-greg").addEventListener("click", () => {
-    const year = parseInt(document.getElementById("ewig-year").value);
-    const month = parseInt(document.getElementById("ewig-month").value);
-    const dayVal = document.getElementById("ewig-day").value;
-
-    if (!year || isNaN(month)) return;
-
-    let day = parseInt(dayVal) || 1;
-    if (month === 0) {
-      // Unara/Intera - day determined by which
-      // We'll convert day=1 as Unara, day=2 as Intera
-      if (!isLeapYear(year)) day = 1;
-    } else {
-      if (day < 1) day = 1;
-      if (day > 28) day = 28;
-    }
-
-    const gregDate = ewigToGreg(year, month, day);
-    const resultEl = document.getElementById("result-ewig-to-greg");
-
-    resultEl.innerHTML = `
-      <div class="result-main">
-        <div class="result-big">📅 ${formatGreg(gregDate)}</div>
-        <div class="result-sub">${formatGregShort(gregDate)}</div>
-      </div>`;
-    resultEl.classList.add("show");
-  });
-
-  // Handle Unara/Intera special day (month=0)
-  document.getElementById("ewig-month").addEventListener("change", (e) => {
-    const g = document.getElementById("ewig-day-group");
-    const dayInput = document.getElementById("ewig-day");
-    if (e.target.value === "0") {
-      g.style.display = "none";
-    } else {
-      g.style.display = "";
-      dayInput.max = 28;
-    }
-  });
+  // Ewig: "Dienstag, 2026 · ☀️ Crescera 5"
+  document.getElementById("ewig-today").textContent = formatEwig(ewig);
+  document.getElementById("ewig-today").className = `today-date ewig-date season-text-${ewig.season}`;
 }
 
-// ---- Year Overview Tab ----
+// ============================================================
+// UI – Jahresübersicht
+// ============================================================
+
 let currentYear = new Date().getFullYear();
 
 function renderYearGrid(year) {
@@ -272,12 +150,11 @@ function renderYearGrid(year) {
   const grid = document.getElementById("year-grid");
   grid.innerHTML = "";
 
-  // Season sections
   const sections = [
-    { label: "Frühling", emoji: "🌸", season: "spring", months: [1,2,3] },
-    { label: "Sommer",   emoji: "☀️",  season: "summer", months: [4,5,6,7] },
-    { label: "Herbst",   emoji: "🍂",  season: "autumn", months: [8,9,10] },
-    { label: "Winter",   emoji: "❄️",  season: "winter", months: [11,12,13] },
+    { label: "Frühling", emoji: "🌸", season: "spring", months: [1, 2, 3] },
+    { label: "Sommer",   emoji: "☀️",  season: "summer", months: [4, 5, 6, 7] },
+    { label: "Herbst",   emoji: "🍂",  season: "autumn", months: [8, 9, 10] },
+    { label: "Winter",   emoji: "❄️",  season: "winter", months: [11, 12, 13] },
   ];
 
   sections.forEach(sec => {
@@ -285,38 +162,40 @@ function renderYearGrid(year) {
     secEl.className = `year-season-section season-section-${sec.season}`;
     secEl.innerHTML = `<div class="season-section-header"><span>${sec.emoji}</span><span>${sec.label}</span></div>`;
 
-    const monthsRow = document.createElement("div");
-    monthsRow.className = "year-months-row";
+    const row = document.createElement("div");
+    row.className = "year-months-row";
 
     sec.months.forEach(mNum => {
       const mData = MONTHS[mNum - 1];
-      const monthCard = document.createElement("div");
-      monthCard.className = `year-month-card glass-card month-${sec.season}`;
-      monthCard.innerHTML = `
+      const card = document.createElement("div");
+      card.className = `year-month-card glass-card month-${sec.season}`;
+
+      // Tage mit korrektem Gregorianischem Datum
+      const daysHtml = Array.from({ length: 28 }, (_, i) => {
+        const d = i + 1;
+        const gregDate = ewigToGreg(year, mNum, d);
+        const gregStr = gregDate.toISOString().split("T")[0];
+        return `<span class="year-day" data-greg="${gregStr}">${d}</span>`;
+      }).join("");
+
+      card.innerHTML = `
         <div class="year-month-title">
           <span>${mData.emoji} ${mData.name}</span>
           <span class="year-month-sub">${mData.sub}</span>
         </div>
-        <div class="year-month-grid">
-          <div class="year-cal-header">${WEEKDAYS.map(d=>`<span>${d}</span>`).join("")}</div>
-          <div class="year-cal-days" data-month="${mNum}" data-year="${year}">
-            ${Array.from({length:28},(_,i)=>{
-              const d = i+1;
-              const gregDate = ewigToGreg(year, mNum, d);
-              return `<span class="year-day" data-day="${d}" data-greg="${gregDate.toISOString().split('T')[0]}">${d}</span>`;
-            }).join("")}
-          </div>
-        </div>`;
-      monthsRow.appendChild(monthCard);
+        <div class="year-cal-header">${WEEKDAYS_SHORT.map(d => `<span>${d}</span>`).join("")}</div>
+        <div class="year-cal-days">${daysHtml}</div>`;
+
+      row.appendChild(card);
     });
 
-    secEl.appendChild(monthsRow);
+    secEl.appendChild(row);
     grid.appendChild(secEl);
   });
 
-  // Special days
+  // Sondertage (Unara / Intera) – immer am ENDE
   const specialSec = document.createElement("div");
-  specialSec.className = `year-season-section season-section-winter`;
+  specialSec.className = "year-season-section season-section-winter";
   specialSec.innerHTML = `<div class="season-section-header"><span>✨</span><span>Zeitlose Tage</span></div>`;
   const specialRow = document.createElement("div");
   specialRow.className = "year-months-row";
@@ -325,8 +204,8 @@ function renderYearGrid(year) {
   const unaraCard = document.createElement("div");
   unaraCard.className = "year-month-card year-special-card glass-card month-winter";
   unaraCard.innerHTML = `
-    <div class="year-month-title"><span>✨ Unara</span><span class="year-month-sub">Der zeitlose Tag</span></div>
-    <div class="special-day-btn year-day" data-day="1" data-greg="${unaraDate.toISOString().split('T')[0]}" data-special="Unara">
+    <div class="year-month-title"><span>✨ Unara</span><span class="year-month-sub">Tag 365</span></div>
+    <div class="special-day-btn year-day" data-greg="${unaraDate.toISOString().split("T")[0]}">
       <div class="special-day-circle">365</div>
       <div class="special-day-label">${formatGregShort(unaraDate)}</div>
     </div>`;
@@ -337,8 +216,8 @@ function renderYearGrid(year) {
     const interaCard = document.createElement("div");
     interaCard.className = "year-month-card year-special-card glass-card month-winter";
     interaCard.innerHTML = `
-      <div class="year-month-title"><span>🌟 Intera</span><span class="year-month-sub">Der Schalttag</span></div>
-      <div class="special-day-btn year-day" data-day="2" data-greg="${interaDate.toISOString().split('T')[0]}" data-special="Intera">
+      <div class="year-month-title"><span>🌟 Intera</span><span class="year-month-sub">Tag 366</span></div>
+      <div class="special-day-btn year-day" data-greg="${interaDate.toISOString().split("T")[0]}">
         <div class="special-day-circle">366</div>
         <div class="special-day-label">${formatGregShort(interaDate)}</div>
       </div>`;
@@ -348,63 +227,106 @@ function renderYearGrid(year) {
   specialSec.appendChild(specialRow);
   grid.appendChild(specialSec);
 
-  // Highlight today
+  // Heutigen Tag markieren
   const todayStr = new Date().toISOString().split("T")[0];
   document.querySelectorAll(`.year-day[data-greg="${todayStr}"]`).forEach(el => {
     el.classList.add("today");
   });
 
-  // Click handlers
+  // Klick-Handler für alle Tage
   document.querySelectorAll(".year-day").forEach(el => {
     el.addEventListener("click", () => {
       const gregStr = el.dataset.greg;
-      if (!gregStr) return;
-      showPopup(gregStr, el.dataset.special);
+      if (gregStr) showPopup(gregStr);
     });
   });
 }
 
-function showPopup(gregDateStr, special) {
+// ============================================================
+// Popup – nur gregorianisches Datum anzeigen
+// ============================================================
+
+function showPopup(gregDateStr) {
   const date = new Date(gregDateStr + "T00:00:00");
   const ewig = gregToEwig(date);
   const overlay = document.getElementById("popup-overlay");
   const content = document.getElementById("popup-content");
 
-  let html = `<div class="popup-inner">`;
-
-  if (ewig.isUnara || ewig.isIntera) {
-    html += `
-      <div class="popup-special">
-        <div class="popup-icon">${ewig.isIntera ? "🌟" : "✨"}</div>
-        <h3>${ewig.monthName}</h3>
-        <div class="popup-greg">${formatGreg(date)}</div>
-        <p>${ewig.isIntera ? "Schalttag · Alle 4 Jahre · Tag 366" : "Zeitloser Tag · Tag 365"}</p>
-      </div>`;
+  let ewigStr, icon;
+  if (ewig.isUnara) {
+    ewigStr = `${ewig.year} · ✨ Unara`;
+    icon = "✨";
+  } else if (ewig.isIntera) {
+    ewigStr = `${ewig.year} · 🌟 Intera`;
+    icon = "🌟";
   } else {
-    const s = SEASONS[ewig.season];
-    const weekdayNames = ["Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samstag","Sonntag"];
-    const weekday = weekdayNames[(ewig.day - 1) % 7];
-    html += `
-      <div class="popup-ewig season-${ewig.season}">
-        <div class="popup-month-badge">${ewig.emoji} ${ewig.monthName}</div>
-        <div class="popup-day-num">${ewig.day}</div>
-        <div class="popup-month-sub">${ewig.monthSub}</div>
-      </div>
-      <div class="popup-details">
-        <div class="popup-detail-row"><span>📅 Gregorianisch</span><span>${formatGreg(date)}</span></div>
-        <div class="popup-detail-row"><span>${s.emoji} Jahreszeit</span><span>${s.label}</span></div>
-        <div class="popup-detail-row"><span>📆 Wochentag</span><span>${weekday}</span></div>
-        <div class="popup-detail-row"><span>🗓 Monat</span><span>${ewig.month} von 13</span></div>
-        <div class="popup-detail-row"><span>📊 Tag des Jahres</span><span>${(ewig.month-1)*28+ewig.day} von 364</span></div>
-      </div>`;
+    ewigStr = `${WEEKDAY_NAMES[ewig.weekday]}, ${ewig.year} · ${ewig.emoji} ${ewig.monthName} ${ewig.day}`;
+    icon = ewig.emoji;
   }
 
-  html += `</div>`;
-  content.innerHTML = html;
+  content.innerHTML = `
+    <div class="popup-simple">
+      <div class="popup-ewig-str season-${ewig.season}">${ewigStr}</div>
+      <div class="popup-greg-str">${formatGreg(date)}</div>
+    </div>`;
+
   overlay.classList.add("visible");
 }
 
-// ---- Tab Navigation ----
+// ============================================================
+// Konverter
+// ============================================================
+
+function setupConverter() {
+  const today = new Date();
+  document.getElementById("greg-input").value = today.toISOString().split("T")[0];
+  document.getElementById("ewig-year").value = today.getFullYear();
+
+  document.getElementById("btn-greg-to-ewig").addEventListener("click", () => {
+    const val = document.getElementById("greg-input").value;
+    if (!val) return;
+    const date = new Date(val + "T00:00:00");
+    const ewig = gregToEwig(date);
+    const resultEl = document.getElementById("result-greg-to-ewig");
+
+    if (ewig.isUnara || ewig.isIntera) {
+      resultEl.innerHTML = `<div class="result-main"><div class="result-big">${ewig.emoji} ${ewig.monthName}</div><div class="result-sub">Jahr ${ewig.year} · ${ewig.monthSub}</div></div>`;
+    } else {
+      resultEl.innerHTML = `
+        <div class="result-main season-${ewig.season}">
+          <div class="result-big">${ewig.emoji} ${ewig.monthName} ${ewig.day}</div>
+          <div class="result-sub">${WEEKDAY_NAMES[ewig.weekday]} · ${ewig.monthSub} · Jahr ${ewig.year}</div>
+        </div>`;
+    }
+    resultEl.classList.add("show");
+  });
+
+  document.getElementById("btn-ewig-to-greg").addEventListener("click", () => {
+    const year = parseInt(document.getElementById("ewig-year").value);
+    const month = parseInt(document.getElementById("ewig-month").value);
+    const dayVal = document.getElementById("ewig-day").value;
+    if (!year || isNaN(month)) return;
+
+    let day = parseInt(dayVal) || 1;
+    if (month !== 0) {
+      day = Math.max(1, Math.min(28, day));
+    }
+
+    const gregDate = ewigToGreg(year, month, day);
+    const resultEl = document.getElementById("result-ewig-to-greg");
+    resultEl.innerHTML = `<div class="result-main"><div class="result-big">📅 ${formatGreg(gregDate)}</div></div>`;
+    resultEl.classList.add("show");
+  });
+
+  document.getElementById("ewig-month").addEventListener("change", (e) => {
+    document.getElementById("ewig-day-group").style.display = e.target.value === "0" ? "none" : "";
+  });
+}
+
+// ============================================================
+// Tabs
+// ============================================================
+
 function setupTabs() {
   document.querySelectorAll(".tab-btn").forEach(btn => {
     btn.addEventListener("click", () => {
@@ -416,7 +338,10 @@ function setupTabs() {
   });
 }
 
-// ---- Year Navigation ----
+// ============================================================
+// Jahresnavigation
+// ============================================================
+
 function setupYearNav() {
   document.getElementById("btn-year-prev").addEventListener("click", () => {
     currentYear--;
@@ -428,7 +353,10 @@ function setupYearNav() {
   });
 }
 
-// ---- Popup ----
+// ============================================================
+// Popup schließen
+// ============================================================
+
 function setupPopup() {
   document.getElementById("popup-close").addEventListener("click", () => {
     document.getElementById("popup-overlay").classList.remove("visible");
@@ -440,7 +368,10 @@ function setupPopup() {
   });
 }
 
-// ---- Init ----
+// ============================================================
+// Init
+// ============================================================
+
 document.addEventListener("DOMContentLoaded", () => {
   renderToday();
   setupConverter();
