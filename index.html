@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="de" data-theme="light">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -29,26 +29,27 @@
       <nav class="tab-nav">
         <button class="tab-btn active" data-tab="uebersicht">Übersicht</button>
         <button class="tab-btn" data-tab="konverter">Konverter</button>
+        <button class="darkmode-toggle" id="darkmode-toggle" title="Dark Mode">
+          <span class="toggle-icon">🌙</span>
+        </button>
       </nav>
     </header>
 
     <!-- Tab: Übersicht -->
     <section class="tab-content active" id="tab-uebersicht">
 
-      <!-- Heutiges Datum kompakt -->
       <div class="today-card glass-card">
         <div class="today-col">
           <span class="today-label">Heute</span>
           <span id="greg-today" class="today-date"></span>
         </div>
         <div class="today-sep">·</div>
-        <div class="today-col">
+        <div class="today-col today-col-right">
           <span class="today-label">Ewiger Kalender</span>
           <span id="ewig-today" class="today-date ewig-date"></span>
         </div>
       </div>
 
-      <!-- Jahresnavigation -->
       <div class="year-controls glass-card">
         <button class="glass-btn icon-btn" id="btn-year-prev">‹</button>
         <div class="year-display">
@@ -58,7 +59,6 @@
         <button class="glass-btn icon-btn" id="btn-year-next">›</button>
       </div>
 
-      <!-- Jahresgitter -->
       <div class="year-grid" id="year-grid"></div>
 
     </section>
@@ -107,7 +107,7 @@
           </div>
           <div class="input-group" id="ewig-day-group">
             <label>Tag</label>
-            <input type="number" id="ewig-day" class="glass-input" placeholder="1-28" min="1" max="28" />
+            <input type="number" id="ewig-day" class="glass-input" placeholder="1–28" min="1" max="28" />
           </div>
           <button class="glass-btn primary" id="btn-ewig-to-greg">Umrechnen →</button>
           <div class="result-box" id="result-ewig-to-greg"></div>
@@ -118,10 +118,9 @@
 
   </div>
 
-  <!-- Popup -->
+  <!-- Popup (am Klickort positioniert) -->
   <div class="popup-overlay" id="popup-overlay">
     <div class="popup-card glass-card" id="popup-card">
-      <button class="popup-close" id="popup-close">✕</button>
       <div id="popup-content"></div>
     </div>
   </div>
