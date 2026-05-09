@@ -100,8 +100,8 @@ function formatGreg(date) {
 
 // Ewig-Format: "Freitag 🌸 Floris 12 🌸 2026"
 function formatEwigDisplay(ewig) {
-  if (ewig.isUnara)  return `${ewig.year} · ✨ Unara`;
-  if (ewig.isIntera) return `${ewig.year} · 🌟 Intera`;
+  if (ewig.isUnara)  return `Unara ✨ ${ewig.year}`;
+  if (ewig.isIntera) return `Intera 🌟 ${ewig.year}`;
   return `${WEEKDAY_NAMES[ewig.weekday]} ${ewig.emoji} ${ewig.monthName} ${ewig.day} ${ewig.emoji} ${ewig.year}`;
 }
 
@@ -161,9 +161,12 @@ function renderYearGrid(year) {
     grid.appendChild(secEl);
   });
 
-  // Klick-Handler
+  // Klick-Handler — stoppt Propagation damit Overlay-Klick Popup schließt
   grid.querySelectorAll(".year-day[data-greg]").forEach(el => {
-    el.addEventListener("click", (e) => showPopup(el.dataset.greg, e));
+    el.addEventListener("click", (e) => {
+      e.stopPropagation();
+      showPopup(el.dataset.greg, e);
+    });
   });
 }
 
@@ -255,8 +258,8 @@ function showPopup(gregDateStr, event) {
   const content = document.getElementById("popup-content");
 
   let ewigLine;
-  if (ewig.isUnara)       ewigLine = `${ewig.year} · ✨ Unara`;
-  else if (ewig.isIntera) ewigLine = `${ewig.year} · 🌟 Intera`;
+  if (ewig.isUnara)       ewigLine = `Unara ✨ ${ewig.year}`;
+  else if (ewig.isIntera) ewigLine = `Intera 🌟 ${ewig.year}`;
   else ewigLine = `${WEEKDAY_NAMES[ewig.weekday]} ${ewig.emoji} ${ewig.monthName} ${ewig.day} ${ewig.emoji} ${ewig.year}`;
 
   content.innerHTML = `
@@ -399,8 +402,12 @@ document.addEventListener("DOMContentLoaded", () => {
   setupYearNav();
   renderYearGrid(currentYear);
 
-  document.getElementById("popup-overlay").addEventListener("click", (e) => {
-    if (e.target === document.getElementById("popup-overlay")) hidePopup();
+  // Popup schließen bei Klick außerhalb (irgendwo ins Leere)
+  document.addEventListener("click", (e) => {
+    const overlay = document.getElementById("popup-overlay");
+    if (!overlay.classList.contains("visible")) return;
+    const card = document.getElementById("popup-card");
+    if (!card.contains(e.target)) hidePopup();
   });
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") hidePopup();
