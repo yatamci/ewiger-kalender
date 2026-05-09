@@ -5,22 +5,30 @@
 // ============================================================
 
 const MONTHS = [
-  { num: 1,  name: "Aurora",   sub: "Morgenröte",     season: "spring", emoji: "🌸" },
-  { num: 2,  name: "Floris",   sub: "Blütezeit",      season: "spring", emoji: "🌸" },
-  { num: 3,  name: "Viridia",  sub: "Grünwerden",     season: "spring", emoji: "🌿" },
-  { num: 4,  name: "Solara",   sub: "Sonnenaufbruch", season: "summer", emoji: "☀️" },
-  { num: 5,  name: "Crescera", sub: "Wachstum",       season: "summer", emoji: "☀️" },
-  { num: 6,  name: "Luminis",  sub: "Lichtzeit",      season: "summer", emoji: "🌞" },
-  { num: 7,  name: "Aestas",   sub: "Hochsommer",     season: "summer", emoji: "🌻" },
-  { num: 8,  name: "Helion",   sub: "Sonnenhöhe",     season: "autumn", emoji: "🍂" },
-  { num: 9,  name: "Fructa",   sub: "Ernte",          season: "autumn", emoji: "🍁" },
+  { num: 1,  name: "Aurora",   sub: "Morgenröte",     season: "winter", emoji: "❄️" },
+  { num: 2,  name: "Floris",   sub: "Blütezeit",      season: "winter", emoji: "❄️" },
+  { num: 3,  name: "Viridia",  sub: "Grünwerden",     season: "spring", emoji: "🌸" },
+  { num: 4,  name: "Solara",   sub: "Sonnenaufbruch", season: "spring", emoji: "🌸" },
+  { num: 5,  name: "Crescera", sub: "Wachstum",       season: "spring", emoji: "🌸" },
+  { num: 6,  name: "Luminis",  sub: "Lichtzeit",      season: "summer", emoji: "☀️" },
+  { num: 7,  name: "Aestas",   sub: "Hochsommer",     season: "summer", emoji: "☀️" },
+  { num: 8,  name: "Helion",   sub: "Sonnenhöhe",     season: "summer", emoji: "☀️" },
+  { num: 9,  name: "Fructa",   sub: "Ernte",          season: "summer", emoji: "☀️" },
   { num: 10, name: "Aurelia",  sub: "Goldzeit",       season: "autumn", emoji: "🍂" },
-  { num: 11, name: "Ventis",   sub: "Windzeit",       season: "winter", emoji: "❄️" },
-  { num: 12, name: "Nivara",   sub: "Schneezeit",     season: "winter", emoji: "🌨️" },
+  { num: 11, name: "Ventis",   sub: "Windzeit",       season: "autumn", emoji: "🍂" },
+  { num: 12, name: "Nivara",   sub: "Schneezeit",     season: "autumn", emoji: "🍂" },
   { num: 13, name: "Noctis",   sub: "Dunkelzeit",     season: "winter", emoji: "❄️" },
 ];
 
-const WEEKDAY_NAMES  = ["Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samstag","Sonntag"];
+// Jahreszeitenanfänge: [MonatNummer, Tag, Label, Farbe-CSS-Klasse]
+// Viridia 8 = Frühlingsanfang, Luminis 15 = Sommeranfang,
+// Fructa 22 = Herbstanfang, Noctis 1 = Winteranfang
+const SEASON_STARTS = [
+  { month: 3,  day: 8,  label: "🌸 Frühlingsanfang 🌸", cls: "season-start-spring" },
+  { month: 6,  day: 15, label: "☀️ Sommeranfang ☀️",    cls: "season-start-summer" },
+  { month: 9,  day: 22, label: "🍂 Herbstanfang 🍂",     cls: "season-start-autumn" },
+  { month: 13, day: 1,  label: "❄️ Winteranfang ❄️",    cls: "season-start-winter" },
+];  = ["Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samstag","Sonntag"];
 const WEEKDAYS_SHORT = ["Mo","Di","Mi","Do","Fr","Sa","So"];
 
 // ============================================================
@@ -127,39 +135,21 @@ let currentYear = new Date().getFullYear();
 
 function renderYearGrid(year) {
   document.getElementById("year-label").textContent = year;
-  const leap    = isLeapYear(year);
+  const leap     = isLeapYear(year);
   const todayStr = toLocalDateStr(new Date());
-  const grid    = document.getElementById("year-grid");
+  const grid     = document.getElementById("year-grid");
   grid.innerHTML = "";
 
-  const sections = [
-    { label: "Frühling", emoji: "🌸", season: "spring", months: [1, 2, 3] },
-    { label: "Sommer",   emoji: "☀️",  season: "summer", months: [4, 5, 6, 7] },
-    { label: "Herbst",   emoji: "🍂",  season: "autumn", months: [8, 9, 10] },
-    // Winter: 3 Monate + Sondertag-Box
-    { label: "Winter",   emoji: "❄️",  season: "winter", months: [11, 12, 13], special: true },
-  ];
+  // Alle 13 Monate + Sondertag in einer einzigen Row (auto-fill grid)
+  const row = document.createElement("div");
+  row.className = "year-months-row";
 
-  sections.forEach(sec => {
-    const secEl = document.createElement("div");
-    secEl.className = `year-season-section season-section-${sec.season}`;
-    secEl.innerHTML = `<div class="season-section-header"><span>${sec.emoji}</span><span>${sec.label}</span></div>`;
+  for (let mNum = 1; mNum <= 13; mNum++) {
+    row.appendChild(buildMonthCard(year, mNum, todayStr));
+  }
+  row.appendChild(buildSpecialCard(year, leap, todayStr));
 
-    const row = document.createElement("div");
-    row.className = "year-months-row";
-
-    sec.months.forEach(mNum => {
-      row.appendChild(buildMonthCard(year, mNum, todayStr));
-    });
-
-    // Sondertag-Box neben Noctis (im Winter)
-    if (sec.special) {
-      row.appendChild(buildSpecialCard(year, leap, todayStr));
-    }
-
-    secEl.appendChild(row);
-    grid.appendChild(secEl);
-  });
+  grid.appendChild(row);
 
   // Klick-Handler — stoppt Propagation damit Overlay-Klick Popup schließt
   grid.querySelectorAll(".year-day[data-greg]").forEach(el => {
@@ -262,9 +252,18 @@ function showPopup(gregDateStr, event) {
   else if (ewig.isIntera) ewigLine = `Intera 🌟 ${ewig.year}`;
   else ewigLine = `${WEEKDAY_NAMES[ewig.weekday]} ${ewig.emoji} ${ewig.monthName} ${ewig.day} ${ewig.emoji} ${ewig.year}`;
 
+  // Jahreszeitenanfang prüfen
+  let seasonStartHtml = "";
+  if (!ewig.isUnara && !ewig.isIntera) {
+    const ss = SEASON_STARTS.find(s => s.month === ewig.month && s.day === ewig.day);
+    if (ss) {
+      seasonStartHtml = `<div class="popup-season-start ${ss.cls}">${ss.label}</div>`;
+    }
+  }
+
   content.innerHTML = `
     <div class="popup-ewig season-${ewig.season}">${ewigLine}</div>
-    <div class="popup-greg">${formatGreg(date)}</div>`;
+    <div class="popup-greg">${formatGreg(date)}</div>${seasonStartHtml}`;
 
   // Popup temporär sichtbar machen um Größe zu messen
   card.style.visibility = "hidden";
