@@ -342,28 +342,8 @@ h1 {
 }
 
 /* ============================================================
-   JAHRESGITTER
+   JAHRESGITTER – kein Sektionsheader, ein einheitliches Grid
    ============================================================ */
-.year-season-section { margin-bottom: 22px; }
-
-.season-section-header {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.82rem;
-  font-weight: 800;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  padding: 7px 4px;
-  margin-bottom: 10px;
-}
-
-.season-section-spring .season-section-header { color: var(--spring-deep); }
-.season-section-summer .season-section-header { color: var(--summer-deep); }
-.season-section-autumn .season-section-header { color: var(--autumn-deep); }
-.season-section-winter .season-section-header { color: var(--winter-deep); }
-
-/* Frühling/Herbst: 3 Kacheln → 3 Spalten; Sommer: 4; Winter: 3 + Sondertag = 4 */
 .year-months-row {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
@@ -565,6 +545,21 @@ h1 {
   background: var(--glass-bg);
   border-radius: var(--radius-sm);
 }
+
+/* Jahreszeitenanfang im Popup */
+.popup-season-start {
+  font-size: 0.80rem;
+  font-weight: 800;
+  padding: 7px 11px;
+  border-radius: var(--radius-sm);
+  margin-top: 6px;
+  text-align: center;
+  letter-spacing: 0.03em;
+}
+.season-start-spring { color: var(--spring-deep); background: var(--spring-glass); border: 1px solid var(--spring-border); }
+.season-start-summer { color: var(--summer-deep); background: var(--summer-glass); border: 1px solid var(--summer-border); }
+.season-start-autumn { color: var(--autumn-deep); background: var(--autumn-glass); border: 1px solid var(--autumn-border); }
+.season-start-winter { color: var(--winter-deep); background: var(--winter-glass); border: 1px solid var(--winter-border); }
 
 /* ============================================================
    BUTTONS
