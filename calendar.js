@@ -1,6 +1,6 @@
 // ============================================================
 // EWIGER KALENDER – Kalenderlogik & UI
-// DST-sicher: dayOfYear via Date.UTC (kein Millisekunden-Math.floor)
+// DST-sicher: dayOfYear via Date.UTC
 // Timezone-sicher: kein toISOString(), nur lokale Datumswerte
 // ============================================================
 
@@ -20,15 +20,14 @@ const MONTHS = [
   { num: 13, name: "Noctis",   sub: "Dunkelzeit",     season: "winter", emoji: "❄️" },
 ];
 
-// Jahreszeitenanfänge: [MonatNummer, Tag, Label, Farbe-CSS-Klasse]
-// Viridia 8 = Frühlingsanfang, Luminis 15 = Sommeranfang,
-// Fructa 22 = Herbstanfang, Noctis 1 = Winteranfang
 const SEASON_STARTS = [
   { month: 3,  day: 8,  label: "🌸 Frühlingsanfang 🌸", cls: "season-start-spring" },
   { month: 6,  day: 15, label: "☀️ Sommeranfang ☀️",    cls: "season-start-summer" },
   { month: 9,  day: 22, label: "🍂 Herbstanfang 🍂",     cls: "season-start-autumn" },
   { month: 13, day: 1,  label: "❄️ Winteranfang ❄️",    cls: "season-start-winter" },
-];  = ["Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samstag","Sonntag"];
+];
+
+const WEEKDAY_NAMES  = ["Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samstag","Sonntag"];
 const WEEKDAYS_SHORT = ["Mo","Di","Mi","Do","Fr","Sa","So"];
 
 // ============================================================
@@ -39,32 +38,29 @@ function isLeapYear(year) {
   return (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
 }
 
-// Tag des Jahres (1-basiert) – DST-sicher via UTC-Vergleich
 function dayOfYear(date) {
   const startUTC = Date.UTC(date.getFullYear(), 0, 1);
   const dateUTC  = Date.UTC(date.getFullYear(), date.getMonth(), date.getDate());
   return Math.round((dateUTC - startUTC) / 86400000) + 1;
 }
 
-// Lokales Datum → YYYY-MM-DD (kein UTC-Versatz)
 function toLocalDateStr(date) {
   return date.getFullYear()
     + "-" + String(date.getMonth() + 1).padStart(2, "0")
     + "-" + String(date.getDate()).padStart(2, "0");
 }
 
-// YYYY-MM-DD → lokales Date-Objekt (kein UTC-Versatz)
 function fromLocalDateStr(str) {
   const [y, m, d] = str.split("-").map(Number);
   return new Date(y, m - 1, d);
 }
 
 // ============================================================
-// KERNKONVERTIERUNG: Gregorianisch → Ewig
+// KONVERTIERUNG: Gregorianisch → Ewig
 // ============================================================
 function gregToEwig(date) {
   const year = date.getFullYear();
-  const doy  = dayOfYear(date); // DST-sicher
+  const doy  = dayOfYear(date);
   const leap = isLeapYear(year);
 
   if (doy === 365) {
@@ -78,7 +74,7 @@ function gregToEwig(date) {
 
   const monthIdx = Math.floor((doy - 1) / 28);
   const day      = ((doy - 1) % 28) + 1;
-  const weekday  = (day - 1) % 7; // 0=Mo … 6=So
+  const weekday  = (day - 1) % 7;
   const m        = MONTHS[monthIdx];
 
   return { year, month: m.num, day,
@@ -88,11 +84,10 @@ function gregToEwig(date) {
 }
 
 // ============================================================
-// KERNKONVERTIERUNG: Ewig → Gregorianisch
+// KONVERTIERUNG: Ewig → Gregorianisch
 // ============================================================
 function ewigToGreg(year, month, day) {
   const doy = month === 0 ? (day === 2 ? 366 : 365) : (month - 1) * 28 + day;
-  // new Date(year, 0, doy) ist DST-sicher für die lokale Seite
   return new Date(year, 0, doy);
 }
 
@@ -106,7 +101,6 @@ function formatGreg(date) {
   });
 }
 
-// Ewig-Format: "Freitag 🌸 Floris 12 🌸 2026"
 function formatEwigDisplay(ewig) {
   if (ewig.isUnara)  return `Unara ✨ ${ewig.year}`;
   if (ewig.isIntera) return `Intera 🌟 ${ewig.year}`;
@@ -140,7 +134,6 @@ function renderYearGrid(year) {
   const grid     = document.getElementById("year-grid");
   grid.innerHTML = "";
 
-  // Alle 13 Monate + Sondertag in einer einzigen Row (auto-fill grid)
   const row = document.createElement("div");
   row.className = "year-months-row";
 
@@ -148,10 +141,8 @@ function renderYearGrid(year) {
     row.appendChild(buildMonthCard(year, mNum, todayStr));
   }
   row.appendChild(buildSpecialCard(year, leap, todayStr));
-
   grid.appendChild(row);
 
-  // Klick-Handler — stoppt Propagation damit Overlay-Klick Popup schließt
   grid.querySelectorAll(".year-day[data-greg]").forEach(el => {
     el.addEventListener("click", (e) => {
       e.stopPropagation();
@@ -187,17 +178,13 @@ function buildSpecialCard(year, leap, todayStr) {
   const card = document.createElement("div");
   card.className = "year-month-card year-special-card glass-card month-winter";
 
-  // Unara
-  const unaraDate = ewigToGreg(year, 0, 1);
-  const unaraStr  = toLocalDateStr(unaraDate);
+  const unaraDate  = ewigToGreg(year, 0, 1);
+  const unaraStr   = toLocalDateStr(unaraDate);
   const unaraToday = unaraStr === todayStr ? " today" : "";
 
-  // Intera
-  let interaStr = "";
-  let interaDate = null;
-  let interaToday = "";
+  let interaStr = "", interaToday = "";
   if (leap) {
-    interaDate  = ewigToGreg(year, 0, 2);
+    const interaDate = ewigToGreg(year, 0, 2);
     interaStr   = toLocalDateStr(interaDate);
     interaToday = interaStr === todayStr ? " today" : "";
   }
@@ -205,7 +192,7 @@ function buildSpecialCard(year, leap, todayStr) {
   const nextLeap = getNextLeapYear(year);
 
   card.innerHTML = `
-    <div class="special-half special-unara">
+    <div class="special-half">
       <div class="special-half-title">
         <span class="special-emoji">✨</span>
         <span class="special-name">Unara</span>
@@ -214,7 +201,7 @@ function buildSpecialCard(year, leap, todayStr) {
       <span class="special-day-num year-day${unaraToday}" data-greg="${unaraStr}">365</span>
     </div>
     <div class="special-divider"></div>
-    <div class="special-half special-intera${leap ? "" : " special-disabled"}">
+    <div class="special-half${leap ? "" : " special-disabled"}">
       <div class="special-half-title">
         <span class="special-emoji">🌟</span>
         <span class="special-name">Intera</span>
@@ -237,13 +224,11 @@ function getNextLeapYear(from) {
 }
 
 // ============================================================
-// POPUP – scrollt mit, positioniert am Klickpunkt
+// POPUP – fixed im Viewport, aber visuell am Klickpunkt
 // ============================================================
 function showPopup(gregDateStr, event) {
-  const date = fromLocalDateStr(gregDateStr);
-  const ewig = gregToEwig(date);
-
-  const overlay = document.getElementById("popup-overlay");
+  const date    = fromLocalDateStr(gregDateStr);
+  const ewig    = gregToEwig(date);
   const card    = document.getElementById("popup-card");
   const content = document.getElementById("popup-content");
 
@@ -252,50 +237,47 @@ function showPopup(gregDateStr, event) {
   else if (ewig.isIntera) ewigLine = `Intera 🌟 ${ewig.year}`;
   else ewigLine = `${WEEKDAY_NAMES[ewig.weekday]} ${ewig.emoji} ${ewig.monthName} ${ewig.day} ${ewig.emoji} ${ewig.year}`;
 
-  // Jahreszeitenanfang prüfen
   let seasonStartHtml = "";
   if (!ewig.isUnara && !ewig.isIntera) {
     const ss = SEASON_STARTS.find(s => s.month === ewig.month && s.day === ewig.day);
-    if (ss) {
-      seasonStartHtml = `<div class="popup-season-start ${ss.cls}">${ss.label}</div>`;
-    }
+    if (ss) seasonStartHtml = `<div class="popup-season-start ${ss.cls}">${ss.label}</div>`;
   }
 
   content.innerHTML = `
     <div class="popup-ewig season-${ewig.season}">${ewigLine}</div>
     <div class="popup-greg">${formatGreg(date)}</div>${seasonStartHtml}`;
 
-  // Popup temporär sichtbar machen um Größe zu messen
+  // Popup zunächst versteckt platzieren um Größe zu messen
   card.style.visibility = "hidden";
-  overlay.classList.add("visible");
+  card.style.display    = "block";
 
   requestAnimationFrame(() => {
     const cardW  = card.offsetWidth;
     const cardH  = card.offsetHeight;
     const margin = 10;
-    const scrollX = window.scrollX;
-    const scrollY = window.scrollY;
-    const vw = window.innerWidth;
-    const vh = window.innerHeight;
+    const vw     = window.innerWidth;
+    const vh     = window.innerHeight;
 
-    // Klickposition relativ zum Dokument
-    let x = event.clientX + scrollX;
-    let y = event.clientY + scrollY + 14;
+    // Position relativ zum Viewport (fixed)
+    let x = event.clientX;
+    let y = event.clientY + 14;
 
-    // Viewport-Grenzen einhalten (relativ zum Viewport)
-    if (event.clientX + cardW + margin > vw) x = event.clientX + scrollX - cardW - margin;
-    if (x < scrollX + margin) x = scrollX + margin;
-    if (event.clientY + 14 + cardH + margin > vh) y = event.clientY + scrollY - cardH - 8;
-    if (y < scrollY + margin) y = scrollY + margin;
+    if (x + cardW + margin > vw) x = event.clientX - cardW - margin;
+    if (x < margin) x = margin;
+    if (y + cardH + margin > vh) y = event.clientY - cardH - 8;
+    if (y < margin) y = margin;
 
-    card.style.left = x + "px";
-    card.style.top  = y + "px";
+    card.style.left       = x + "px";
+    card.style.top        = y + "px";
     card.style.visibility = "visible";
+    card.classList.add("popup-open");
   });
 }
 
 function hidePopup() {
-  document.getElementById("popup-overlay").classList.remove("visible");
+  const card = document.getElementById("popup-card");
+  card.classList.remove("popup-open");
+  card.style.display = "none";
 }
 
 // ============================================================
@@ -335,13 +317,13 @@ function setupConverter() {
     const ewig = gregToEwig(date);
     const el   = document.getElementById("result-greg-to-ewig");
 
-    let display;
+    let html;
     if (ewig.isUnara || ewig.isIntera) {
-      display = `<div class="result-main season-${ewig.season}"><div class="result-big">${ewig.emoji} ${ewig.monthName} · ${ewig.year}</div></div>`;
+      html = `<div class="result-main season-${ewig.season}"><div class="result-big">${ewig.emoji} ${ewig.monthName} · ${ewig.year}</div></div>`;
     } else {
-      display = `<div class="result-main season-${ewig.season}"><div class="result-big">${WEEKDAY_NAMES[ewig.weekday]} ${ewig.emoji} ${ewig.monthName} ${ewig.day} ${ewig.emoji} ${ewig.year}</div></div>`;
+      html = `<div class="result-main season-${ewig.season}"><div class="result-big">${WEEKDAY_NAMES[ewig.weekday]} ${ewig.emoji} ${ewig.monthName} ${ewig.day} ${ewig.emoji} ${ewig.year}</div></div>`;
     }
-    el.innerHTML = display;
+    el.innerHTML = html;
     el.classList.add("show");
   });
 
@@ -401,11 +383,10 @@ document.addEventListener("DOMContentLoaded", () => {
   setupYearNav();
   renderYearGrid(currentYear);
 
-  // Popup schließen bei Klick außerhalb (irgendwo ins Leere)
+  // Popup schließen bei Klick irgendwo ins Leere
   document.addEventListener("click", (e) => {
-    const overlay = document.getElementById("popup-overlay");
-    if (!overlay.classList.contains("visible")) return;
     const card = document.getElementById("popup-card");
+    if (!card.classList.contains("popup-open")) return;
     if (!card.contains(e.target)) hidePopup();
   });
   document.addEventListener("keydown", (e) => {
