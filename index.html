@@ -119,11 +119,10 @@
 
   </div>
 
-  <!-- Popup (scrollt mit, positioniert via JS) -->
-  <div class="popup-overlay" id="popup-overlay">
-    <div class="popup-card glass-card" id="popup-card">
-      <div id="popup-content"></div>
-    </div>
+  <!-- Popup: direkt im body, kein wrapper-div, standardmäßig display:none via CSS -->
+  <div id="popup-overlay" style="display:none"></div>
+  <div class="glass-card" id="popup-card">
+    <div id="popup-content"></div>
   </div>
 
   <script src="calendar.js"></script>
