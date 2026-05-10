@@ -1,7 +1,5 @@
 # ✨ Ewiger Kalender ✨
 
-Ein moderner Ewiger Kalender im iOS 26 Liquid Glass Design.
-
 **28 Tage · 52 Wochen · 13 Monate**
 
 ## Features
