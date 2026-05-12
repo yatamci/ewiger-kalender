@@ -11,14 +11,11 @@
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
 </head>
 <body>
-
   <div class="bg-orb orb-1"></div>
   <div class="bg-orb orb-2"></div>
   <div class="bg-orb orb-3"></div>
   <div class="bg-orb orb-4"></div>
-
   <div class="app-container">
-
     <header class="glass-header">
       <div class="header-inner">
         <div class="header-title">
@@ -36,10 +33,7 @@
         </button>
       </nav>
     </header>
-
-    <!-- Tab: Übersicht -->
     <section class="tab-content active" id="tab-uebersicht">
-
       <div class="today-card glass-card">
         <div class="today-col">
           <span class="today-label">Heute</span>
@@ -51,37 +45,27 @@
           <span id="ewig-today" class="today-date ewig-date"></span>
         </div>
       </div>
-
       <div class="year-controls glass-card">
-        <button class="glass-btn icon-btn" id="btn-year-prev">‹</button>
-        <div class="year-display">
-          <span id="year-label">2026</span>
-        </div>
-        <button class="glass-btn icon-btn" id="btn-year-next">›</button>
+        <button class="glass-btn icon-btn" id="btn-year-prev">&#8249;</button>
+        <div class="year-display"><span id="year-label">2026</span></div>
+        <button class="glass-btn icon-btn" id="btn-year-next">&#8250;</button>
       </div>
-
       <div class="year-grid" id="year-grid"></div>
-
     </section>
-
-    <!-- Tab: Konverter -->
     <section class="tab-content" id="tab-konverter">
       <div class="converter-wrap">
-
         <div class="converter-block glass-card">
-          <h2 class="converter-title">Gregorianisch → Ewig</h2>
+          <h2 class="converter-title">Gregorianisch &rarr; Ewig</h2>
           <div class="input-group">
             <label>Datum eingeben</label>
             <input type="date" id="greg-input" class="glass-input" />
           </div>
-          <button class="glass-btn primary" id="btn-greg-to-ewig">Umrechnen →</button>
+          <button class="glass-btn primary" id="btn-greg-to-ewig">Umrechnen &rarr;</button>
           <div class="result-box" id="result-greg-to-ewig"></div>
         </div>
-
-        <div class="converter-divider">⟷</div>
-
+        <div class="converter-divider">&#8596;</div>
         <div class="converter-block glass-card">
-          <h2 class="converter-title">Ewig → Gregorianisch</h2>
+          <h2 class="converter-title">Ewig &rarr; Gregorianisch</h2>
           <div class="input-group">
             <label>Jahr</label>
             <input type="number" id="ewig-year" class="glass-input" placeholder="2026" min="1" max="9999" />
@@ -90,19 +74,19 @@
             <label>Monat</label>
             <select id="ewig-month" class="glass-input glass-select">
               <option value="">– Monat wählen –</option>
-              <option value="1">1 – Aurora (Morgenröte)</option>
-              <option value="2">2 – Floris (Blütezeit)</option>
-              <option value="3">3 – Viridia (Grünwerden)</option>
-              <option value="4">4 – Solara (Sonnenaufbruch)</option>
-              <option value="5">5 – Crescera (Wachstum)</option>
-              <option value="6">6 – Luminis (Lichtzeit)</option>
-              <option value="7">7 – Aestas (Hochsommer)</option>
-              <option value="8">8 – Helion (Sonnenhöhe)</option>
-              <option value="9">9 – Fructa (Ernte)</option>
-              <option value="10">10 – Aurelia (Goldzeit)</option>
-              <option value="11">11 – Ventis (Windzeit)</option>
-              <option value="12">12 – Nivara (Schneezeit)</option>
-              <option value="13">13 – Noctis (Dunkelzeit)</option>
+              <option value="1">1 – Nivara</option>
+              <option value="2">2 – Aurora</option>
+              <option value="3">3 – Viridia</option>
+              <option value="4">4 – Floris</option>
+              <option value="5">5 – Solara</option>
+              <option value="6">6 – Luminis</option>
+              <option value="7">7 – Calora</option>
+              <option value="8">8 – Helia</option>
+              <option value="9">9 – Fructa</option>
+              <option value="10">10 – Aurelia</option>
+              <option value="11">11 – Ventis</option>
+              <option value="12">12 – Umbra</option>
+              <option value="13">13 – Noctis</option>
               <option value="0">Unara / Intera (Zeitloser Tag)</option>
             </select>
           </div>
@@ -110,21 +94,16 @@
             <label>Tag</label>
             <input type="number" id="ewig-day" class="glass-input" placeholder="1–28" min="1" max="28" />
           </div>
-          <button class="glass-btn primary" id="btn-ewig-to-greg">Umrechnen →</button>
+          <button class="glass-btn primary" id="btn-ewig-to-greg">Umrechnen &rarr;</button>
           <div class="result-box" id="result-ewig-to-greg"></div>
         </div>
-
       </div>
     </section>
-
   </div>
-
-  <!-- Popup: direkt im body, kein wrapper-div, standardmäßig display:none via CSS -->
   <div id="popup-overlay" style="display:none"></div>
   <div class="glass-card" id="popup-card">
     <div id="popup-content"></div>
   </div>
-
   <script src="calendar.js"></script>
 </body>
 </html>
