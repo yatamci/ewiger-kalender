@@ -1,23 +1,23 @@
 // ============================================================
-// EWIGER KALENDER – Kalenderlogik & UI
-// DST-sicher: dayOfYear via Date.UTC
-// Timezone-sicher: kein toISOString(), nur lokale Datumswerte
+// EWIGER KALENDER – Version 3
+// Neue Monatsnamen, neues Datumsformat, 3x5 Raster
+// DST-sicher + Timezone-sicher
 // ============================================================
 
 const MONTHS = [
-  { num: 1,  name: "Aurora",   sub: "Morgenröte",     season: "winter", emoji: "❄️" },
-  { num: 2,  name: "Floris",   sub: "Blütezeit",      season: "winter", emoji: "❄️" },
-  { num: 3,  name: "Viridia",  sub: "Grünwerden",     season: "spring", emoji: "🌸" },
-  { num: 4,  name: "Solara",   sub: "Sonnenaufbruch", season: "spring", emoji: "🌸" },
-  { num: 5,  name: "Crescera", sub: "Wachstum",       season: "spring", emoji: "🌸" },
-  { num: 6,  name: "Luminis",  sub: "Lichtzeit",      season: "summer", emoji: "☀️" },
-  { num: 7,  name: "Aestas",   sub: "Hochsommer",     season: "summer", emoji: "☀️" },
-  { num: 8,  name: "Helion",   sub: "Sonnenhöhe",     season: "summer", emoji: "☀️" },
-  { num: 9,  name: "Fructa",   sub: "Ernte",          season: "summer", emoji: "☀️" },
-  { num: 10, name: "Aurelia",  sub: "Goldzeit",       season: "autumn", emoji: "🍂" },
-  { num: 11, name: "Ventis",   sub: "Windzeit",       season: "autumn", emoji: "🍂" },
-  { num: 12, name: "Nivara",   sub: "Schneezeit",     season: "autumn", emoji: "🍂" },
-  { num: 13, name: "Noctis",   sub: "Dunkelzeit",     season: "winter", emoji: "❄️" },
+  { num: 1,  name: "Nivara",  sub: "Schneezeit",     season: "winter", emoji: "❄️" },
+  { num: 2,  name: "Aurora",  sub: "Morgenröte",     season: "winter", emoji: "❄️" },
+  { num: 3,  name: "Viridia", sub: "Grünwerden",     season: "spring", emoji: "🌸" },
+  { num: 4,  name: "Floris",  sub: "Blütezeit",      season: "spring", emoji: "🌸" },
+  { num: 5,  name: "Solara",  sub: "Sonnenaufbruch", season: "spring", emoji: "🌸" },
+  { num: 6,  name: "Luminis", sub: "Lichtzeit",      season: "summer", emoji: "☀️" },
+  { num: 7,  name: "Calora",  sub: "Wärmezeit",      season: "summer", emoji: "☀️" },
+  { num: 8,  name: "Helia",   sub: "Sonnenhöhe",     season: "summer", emoji: "☀️" },
+  { num: 9,  name: "Fructa",  sub: "Ernte",          season: "summer", emoji: "☀️" },
+  { num: 10, name: "Aurelia", sub: "Goldzeit",       season: "autumn", emoji: "🍂" },
+  { num: 11, name: "Ventis",  sub: "Windzeit",       season: "autumn", emoji: "🍂" },
+  { num: 12, name: "Umbra",   sub: "Dämmerzeit",     season: "autumn", emoji: "🍂" },
+  { num: 13, name: "Noctis",  sub: "Dunkelzeit",     season: "winter", emoji: "❄️" },
 ];
 
 const SEASON_STARTS = [
@@ -101,10 +101,11 @@ function formatGreg(date) {
   });
 }
 
-function formatEwigDisplay(ewig) {
-  if (ewig.isUnara)  return `Unara ✨ ${ewig.year}`;
-  if (ewig.isIntera) return `Intera 🌟 ${ewig.year}`;
-  return `${WEEKDAY_NAMES[ewig.weekday]} ${ewig.emoji} ${ewig.monthName} ${ewig.day} ${ewig.emoji} ${ewig.year}`;
+// "Donnerstag, 18. Solara 2026" – kein Emoji
+function formatEwigReadable(ewig) {
+  if (ewig.isUnara)  return "Unara " + ewig.year;
+  if (ewig.isIntera) return "Intera " + ewig.year;
+  return WEEKDAY_NAMES[ewig.weekday] + ", " + ewig.day + ". " + ewig.monthName + " " + ewig.year;
 }
 
 // ============================================================
@@ -118,12 +119,14 @@ function renderToday() {
   document.getElementById("greg-today").textContent = formatGreg(today);
 
   const ewigEl = document.getElementById("ewig-today");
-  ewigEl.textContent = formatEwigDisplay(ewig);
-  ewigEl.className = `today-date ewig-date season-text-${ewig.season}`;
+  ewigEl.textContent = formatEwigReadable(ewig);
+  ewigEl.className = "today-date ewig-date season-text-" + ewig.season;
 }
 
 // ============================================================
-// JAHRESÜBERSICHT
+// JAHRESÜBERSICHT – 3×5 Raster
+// Zeilen 1–4: je 3 Monate (Monate 1–12)
+// Zeile 5: Monat 13 + Unara-Karte + Intera-Karte
 // ============================================================
 let currentYear = new Date().getFullYear();
 
@@ -134,15 +137,25 @@ function renderYearGrid(year) {
   const grid     = document.getElementById("year-grid");
   grid.innerHTML = "";
 
-  const row = document.createElement("div");
-  row.className = "year-months-row";
-
-  for (let mNum = 1; mNum <= 13; mNum++) {
-    row.appendChild(buildMonthCard(year, mNum, todayStr));
+  // Zeilen 1–4: Monate 1–12
+  for (let row = 0; row < 4; row++) {
+    const rowEl = document.createElement("div");
+    rowEl.className = "year-months-row";
+    for (let col = 0; col < 3; col++) {
+      rowEl.appendChild(buildMonthCard(year, row * 3 + col + 1, todayStr));
+    }
+    grid.appendChild(rowEl);
   }
-  row.appendChild(buildSpecialCard(year, leap, todayStr));
-  grid.appendChild(row);
 
+  // Zeile 5: Monat 13 + Unara + Intera
+  const lastRow = document.createElement("div");
+  lastRow.className = "year-months-row";
+  lastRow.appendChild(buildMonthCard(year, 13, todayStr));
+  lastRow.appendChild(buildUnaraCard(year, todayStr));
+  lastRow.appendChild(buildInteraCard(year, leap, todayStr));
+  grid.appendChild(lastRow);
+
+  // Klick-Handler nur für reguläre Tage
   grid.querySelectorAll(".year-day[data-greg]").forEach(el => {
     el.addEventListener("click", (e) => {
       e.stopPropagation();
@@ -154,65 +167,65 @@ function renderYearGrid(year) {
 function buildMonthCard(year, mNum, todayStr) {
   const mData = MONTHS[mNum - 1];
   const card  = document.createElement("div");
-  card.className = `year-month-card glass-card month-${mData.season}`;
+  card.className = "year-month-card glass-card month-" + mData.season;
 
   const daysHtml = Array.from({ length: 28 }, (_, i) => {
     const d        = i + 1;
     const gregDate = ewigToGreg(year, mNum, d);
     const gregStr  = toLocalDateStr(gregDate);
     const isToday  = gregStr === todayStr ? " today" : "";
-    return `<span class="year-day${isToday}" data-greg="${gregStr}">${d}</span>`;
+    return '<span class="year-day' + isToday + '" data-greg="' + gregStr + '">' + d + '</span>';
   }).join("");
 
-  card.innerHTML = `
-    <div class="year-month-title">
-      <span>${mData.emoji} ${mData.name}</span>
-      <span class="year-month-sub">${mData.sub}</span>
-    </div>
-    <div class="year-cal-header">${WEEKDAYS_SHORT.map(d => `<span>${d}</span>`).join("")}</div>
-    <div class="year-cal-days">${daysHtml}</div>`;
+  card.innerHTML =
+    '<div class="year-month-title">' +
+      '<span>' + mData.emoji + ' ' + mData.name + '</span>' +
+      '<span class="year-month-sub">' + mData.sub + '</span>' +
+    '</div>' +
+    '<div class="year-cal-header">' + WEEKDAYS_SHORT.map(d => '<span>' + d + '</span>').join("") + '</div>' +
+    '<div class="year-cal-days">' + daysHtml + '</div>';
+
   return card;
 }
 
-function buildSpecialCard(year, leap, todayStr) {
+// Unara: Info direkt im Feld, kein Popup
+function buildUnaraCard(year, todayStr) {
   const card = document.createElement("div");
   card.className = "year-month-card year-special-card glass-card month-winter";
 
-  const unaraDate  = ewigToGreg(year, 0, 1);
-  const unaraStr   = toLocalDateStr(unaraDate);
-  const unaraToday = unaraStr === todayStr ? " today" : "";
+  const unaraDate = ewigToGreg(year, 0, 1);
+  const unaraStr  = toLocalDateStr(unaraDate);
+  const isToday   = unaraStr === todayStr;
 
-  let interaStr = "", interaToday = "";
+  card.innerHTML =
+    '<div class="special-card-title' + (isToday ? ' special-today' : '') + '">Unara ' + year + '</div>' +
+    '<div class="special-card-sub">Zeitloser Tag &middot; Tag 365</div>' +
+    '<div class="special-card-greg">' + formatGreg(unaraDate) + '</div>';
+
+  return card;
+}
+
+// Intera: Info direkt im Feld, ausgegraut wenn kein Schaltjahr
+function buildInteraCard(year, leap, todayStr) {
+  const card = document.createElement("div");
+  card.className = "year-month-card year-special-card glass-card month-winter" + (leap ? "" : " special-disabled");
+
   if (leap) {
     const interaDate = ewigToGreg(year, 0, 2);
-    interaStr   = toLocalDateStr(interaDate);
-    interaToday = interaStr === todayStr ? " today" : "";
+    const interaStr  = toLocalDateStr(interaDate);
+    const isToday    = interaStr === todayStr;
+
+    card.innerHTML =
+      '<div class="special-card-title' + (isToday ? ' special-today' : '') + '">Intera ' + year + '</div>' +
+      '<div class="special-card-sub">Zeitloser Tag &middot; Tag 366</div>' +
+      '<div class="special-card-greg">' + formatGreg(interaDate) + '</div>';
+  } else {
+    const nextLeap = getNextLeapYear(year);
+    card.innerHTML =
+      '<div class="special-card-title">Intera</div>' +
+      '<div class="special-card-sub">Zeitloser Tag &middot; Tag 366</div>' +
+      '<div class="special-card-next">Nächstes Schaltjahr: ' + nextLeap + '</div>';
   }
-
-  const nextLeap = getNextLeapYear(year);
-
-  card.innerHTML = `
-    <div class="special-half">
-      <div class="special-half-title">
-        <span class="special-emoji">✨</span>
-        <span class="special-name">Unara</span>
-        <span class="special-sub">Zeitloser Tag</span>
-      </div>
-      <span class="special-day-num year-day${unaraToday}" data-greg="${unaraStr}">365</span>
-    </div>
-    <div class="special-divider"></div>
-    <div class="special-half${leap ? "" : " special-disabled"}">
-      <div class="special-half-title">
-        <span class="special-emoji">🌟</span>
-        <span class="special-name">Intera</span>
-        <span class="special-sub">Zeitloser Tag</span>
-      </div>
-      ${leap
-        ? `<span class="special-day-num year-day${interaToday}" data-greg="${interaStr}">366</span>`
-        : `<span class="special-day-num disabled-day">366</span>
-           <span class="intera-next">nächstes Schaltjahr: ${nextLeap}</span>`
-      }
-    </div>`;
 
   return card;
 }
@@ -224,7 +237,7 @@ function getNextLeapYear(from) {
 }
 
 // ============================================================
-// POPUP – fixed im Viewport, aber visuell am Klickpunkt
+// POPUP – Jahreszeitenanfang zuerst, dann Ewig, dann Greg
 // ============================================================
 function showPopup(gregDateStr, event) {
   const date    = fromLocalDateStr(gregDateStr);
@@ -232,22 +245,18 @@ function showPopup(gregDateStr, event) {
   const card    = document.getElementById("popup-card");
   const content = document.getElementById("popup-content");
 
-  let ewigLine;
-  if (ewig.isUnara)       ewigLine = `Unara ✨ ${ewig.year}`;
-  else if (ewig.isIntera) ewigLine = `Intera 🌟 ${ewig.year}`;
-  else ewigLine = `${WEEKDAY_NAMES[ewig.weekday]} ${ewig.emoji} ${ewig.monthName} ${ewig.day} ${ewig.emoji} ${ewig.year}`;
-
+  // Jahreszeitenanfang (ganz oben)
   let seasonStartHtml = "";
   if (!ewig.isUnara && !ewig.isIntera) {
     const ss = SEASON_STARTS.find(s => s.month === ewig.month && s.day === ewig.day);
-    if (ss) seasonStartHtml = `<div class="popup-season-start ${ss.cls}">${ss.label}</div>`;
+    if (ss) seasonStartHtml = '<div class="popup-season-start ' + ss.cls + '">' + ss.label + '</div>';
   }
 
-  content.innerHTML = `
-    <div class="popup-ewig season-${ewig.season}">${ewigLine}</div>
-    <div class="popup-greg">${formatGreg(date)}</div>${seasonStartHtml}`;
+  content.innerHTML =
+    seasonStartHtml +
+    '<div class="popup-ewig season-' + ewig.season + '">' + formatEwigReadable(ewig) + '</div>' +
+    '<div class="popup-greg">' + formatGreg(date) + '</div>';
 
-  // Popup zunächst versteckt platzieren um Größe zu messen
   card.style.visibility = "hidden";
   card.style.display    = "block";
 
@@ -258,7 +267,6 @@ function showPopup(gregDateStr, event) {
     const vw     = window.innerWidth;
     const vh     = window.innerHeight;
 
-    // Position relativ zum Viewport (fixed)
     let x = event.clientX;
     let y = event.clientY + 14;
 
@@ -316,14 +324,7 @@ function setupConverter() {
     const date = fromLocalDateStr(val);
     const ewig = gregToEwig(date);
     const el   = document.getElementById("result-greg-to-ewig");
-
-    let html;
-    if (ewig.isUnara || ewig.isIntera) {
-      html = `<div class="result-main season-${ewig.season}"><div class="result-big">${ewig.emoji} ${ewig.monthName} · ${ewig.year}</div></div>`;
-    } else {
-      html = `<div class="result-main season-${ewig.season}"><div class="result-big">${WEEKDAY_NAMES[ewig.weekday]} ${ewig.emoji} ${ewig.monthName} ${ewig.day} ${ewig.emoji} ${ewig.year}</div></div>`;
-    }
-    el.innerHTML = html;
+    el.innerHTML = '<div class="result-main season-' + ewig.season + '"><div class="result-big">' + formatEwigReadable(ewig) + '</div></div>';
     el.classList.add("show");
   });
 
@@ -332,13 +333,11 @@ function setupConverter() {
     const month = parseInt(document.getElementById("ewig-month").value);
     const dayV  = document.getElementById("ewig-day").value;
     if (!year || isNaN(month)) return;
-
     let day = parseInt(dayV) || 1;
     if (month !== 0) day = Math.max(1, Math.min(28, day));
-
     const gregDate = ewigToGreg(year, month, day);
     const el = document.getElementById("result-ewig-to-greg");
-    el.innerHTML = `<div class="result-main"><div class="result-big">📅 ${formatGreg(gregDate)}</div></div>`;
+    el.innerHTML = '<div class="result-main"><div class="result-big">' + formatGreg(gregDate) + '</div></div>';
     el.classList.add("show");
   });
 
@@ -362,14 +361,8 @@ function setupTabs() {
 }
 
 function setupYearNav() {
-  document.getElementById("btn-year-prev").addEventListener("click", () => {
-    currentYear--;
-    renderYearGrid(currentYear);
-  });
-  document.getElementById("btn-year-next").addEventListener("click", () => {
-    currentYear++;
-    renderYearGrid(currentYear);
-  });
+  document.getElementById("btn-year-prev").addEventListener("click", () => { currentYear--; renderYearGrid(currentYear); });
+  document.getElementById("btn-year-next").addEventListener("click", () => { currentYear++; renderYearGrid(currentYear); });
 }
 
 // ============================================================
@@ -383,7 +376,6 @@ document.addEventListener("DOMContentLoaded", () => {
   setupYearNav();
   renderYearGrid(currentYear);
 
-  // Popup schließen bei Klick irgendwo ins Leere
   document.addEventListener("click", (e) => {
     const card = document.getElementById("popup-card");
     if (!card.classList.contains("popup-open")) return;
