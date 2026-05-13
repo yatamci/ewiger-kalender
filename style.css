@@ -170,8 +170,60 @@ h1 {
 .year-month-card.month-autumn { border-color:var(--autumn-border); }
 .year-month-card.month-winter { border-color:var(--winter-border); }
 
-.year-month-title { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; font-weight:800; font-size:0.84rem; color:var(--text-primary); }
-.year-month-sub { font-size:0.66rem; font-weight:500; color:var(--text-secondary); }
+/* Luminis: Gradient-Rahmen Frühling→Sommer */
+.year-month-card.month-luminis {
+  border: none;
+  position: relative;
+}
+.year-month-card.month-luminis::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-lg);
+  padding: 1.5px;
+  background: linear-gradient(135deg, var(--spring-border), var(--summer-border));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* Unara / Intera: lila Umrandung */
+.year-month-card.month-special {
+  border-color: rgba(150, 100, 220, 0.40);
+}
+[data-theme="dark"] .year-month-card.month-special {
+  border-color: rgba(180, 130, 255, 0.35);
+}
+
+/* Monatsheader: Emoji links | Name zentriert | Bezeichnung rechts */
+.year-month-header {
+  display: grid;
+  grid-template-columns: 1.4rem 1fr 1.4rem;
+  align-items: start;
+  margin-bottom: 8px;
+  gap: 2px;
+}
+.year-month-emoji {
+  font-size: 0.90rem;
+  line-height: 1.2;
+  justify-self: start;
+}
+.year-month-name {
+  font-size: 0.84rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  text-align: center;
+  line-height: 1.2;
+}
+.year-month-sub {
+  font-size: 0.58rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-align: right;
+  line-height: 1.2;
+  justify-self: end;
+}
 
 .year-cal-header { display:grid; grid-template-columns:repeat(7,1fr); margin-bottom:2px; }
 .year-cal-header span { text-align:center; font-size:0.58rem; font-weight:800; color:var(--text-light); padding:2px 0; }
@@ -188,13 +240,19 @@ h1 {
 .month-autumn .year-day.today { background:var(--autumn-accent); color:#fff; font-weight:900; }
 .month-winter .year-day.today { background:var(--winter-accent); color:#fff; font-weight:900; }
 
-/* Sonderkarten: Info inline, kein Popup */
-.year-special-card { padding:18px; display:flex; flex-direction:column; gap:6px; justify-content:center; }
-.special-card-title { font-family:'Playfair Display',serif; font-size:1.1rem; font-weight:700; color:var(--text-primary); line-height:1.3; }
-.special-card-title.special-today { color:var(--winter-deep); }
-.special-card-sub { font-size:0.66rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--text-light); margin-top:2px; }
-.special-card-greg { font-size:0.82rem; font-weight:600; color:var(--text-secondary); line-height:1.5; margin-top:6px; }
-.special-card-next { font-size:0.76rem; font-weight:600; color:var(--text-light); margin-top:6px; font-style:italic; }
+[data-theme="dark"] .month-spring .year-day.today { background:var(--spring-accent); color:#0a1a0e; }
+[data-theme="dark"] .month-summer .year-day.today { background:var(--summer-accent); color:#1a1000; }
+[data-theme="dark"] .month-autumn .year-day.today { background:var(--autumn-accent); color:#1a0800; }
+[data-theme="dark"] .month-winter .year-day.today { background:var(--winter-accent); color:#070d1f; }
+
+/* Sonderkarten: Info inline, kein Popup, zentriert */
+.year-special-card { padding:18px 14px; display:flex; flex-direction:column; gap:5px; justify-content:center; align-items:center; text-align:center; }
+.special-card-title { font-family:'Nunito',sans-serif; font-size:1.05rem; font-weight:900; color:var(--text-primary); line-height:1.3; letter-spacing:0.01em; }
+.special-card-title.special-today { color: rgba(120,70,200,0.9); }
+[data-theme="dark"] .special-card-title.special-today { color: rgba(190,150,255,0.95); }
+.special-card-sub { font-size:0.64rem; font-weight:700; letter-spacing:0.10em; text-transform:uppercase; color:var(--text-light); margin-top:1px; }
+.special-card-greg { font-size:0.80rem; font-weight:600; color:var(--text-secondary); line-height:1.5; margin-top:6px; }
+.special-card-next { font-size:0.74rem; font-weight:600; color:var(--text-light); margin-top:6px; font-style:italic; }
 .special-disabled { opacity:var(--disabled-opacity); }
 .disabled-day { cursor:default; opacity:var(--disabled-opacity); }
 
