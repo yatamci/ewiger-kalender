@@ -13,10 +13,10 @@ const MONTHS = [
   { num: 6,  name: "Luminis", sub: "Lichtzeit",      season: "summer", emoji: "☀️" },
   { num: 7,  name: "Calora",  sub: "Wärmezeit",      season: "summer", emoji: "☀️" },
   { num: 8,  name: "Helia",   sub: "Sonnenhöhe",     season: "summer", emoji: "☀️" },
-  { num: 9,  name: "Fructa",  sub: "Ernte",          season: "summer", emoji: "☀️" },
+  { num: 9,  name: "Fructa",  sub: "Erntezeit",       season: "summer", emoji: "☀️" },
   { num: 10, name: "Aurelia", sub: "Goldzeit",       season: "autumn", emoji: "🍂" },
   { num: 11, name: "Ventis",  sub: "Windzeit",       season: "autumn", emoji: "🍂" },
-  { num: 12, name: "Umbra",   sub: "Dämmerzeit",     season: "autumn", emoji: "🍂" },
+  { num: 12, name: "Umbra",   sub: "Schattenzeit",   season: "autumn", emoji: "🍂" },
   { num: 13, name: "Noctis",  sub: "Dunkelzeit",     season: "winter", emoji: "❄️" },
 ];
 
@@ -27,7 +27,21 @@ const SEASON_STARTS = [
   { month: 13, day: 1,  label: "❄️ Winteranfang ❄️",    cls: "season-start-winter" },
 ];
 
-const WEEKDAY_NAMES  = ["Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samstag","Sonntag"];
+// Gibt die tatsächliche Jahreszeit für ein ewiges Datum zurück,
+// basierend auf den Jahreszeitenanfängen (nicht dem Monat)
+// Winteranfang: Noctis 1 (Monat 13, Tag 1)  = doy (13-1)*28+1 = 337
+// Frühlingsanfang: Viridia 8 (Monat 3, Tag 8) = doy (3-1)*28+8 = 64
+// Sommeranfang: Luminis 15 (Monat 6, Tag 15) = doy (6-1)*28+15 = 155
+// Herbstanfang: Fructa 22 (Monat 9, Tag 22)  = doy (9-1)*28+22 = 246
+function calendarSeason(doy) {
+  if (doy < 64)  return "winter";  // Nivara 1 – Viridia 7
+  if (doy < 155) return "spring";  // Viridia 8 – Luminis 14
+  if (doy < 246) return "summer";  // Luminis 15 – Fructa 21
+  if (doy < 337) return "autumn";  // Fructa 22 – Noctis 0 (d.h. bis Umbra 28)
+  return "winter";                 // Noctis 1 – Unara/Intera
+}
+
+
 const WEEKDAYS_SHORT = ["Mo","Di","Mi","Do","Fr","Sa","So"];
 
 // ============================================================
@@ -79,7 +93,9 @@ function gregToEwig(date) {
 
   return { year, month: m.num, day,
            monthName: m.name, monthSub: m.sub,
-           season: m.season, emoji: m.emoji,
+           season: m.season,           // Monats-Jahreszeit (für Randfarbe der Karte)
+           popupSeason: calendarSeason(doy), // Echte Jahreszeit (für Popup-Farbe)
+           emoji: m.emoji,
            weekday, isUnara: false, isIntera: false };
 }
 
@@ -167,7 +183,10 @@ function renderYearGrid(year) {
 function buildMonthCard(year, mNum, todayStr) {
   const mData = MONTHS[mNum - 1];
   const card  = document.createElement("div");
-  card.className = "year-month-card glass-card month-" + mData.season;
+  const displayEmoji = mNum === 6 ? "🌸/☀️" : mData.emoji;
+  const borderClass = mNum === 6 ? "month-luminis" : "month-" + mData.season;
+  card.className = "year-month-card glass-card " + borderClass;
+  card.className = "year-month-card glass-card " + borderClass;
 
   const daysHtml = Array.from({ length: 28 }, (_, i) => {
     const d        = i + 1;
@@ -178,8 +197,9 @@ function buildMonthCard(year, mNum, todayStr) {
   }).join("");
 
   card.innerHTML =
-    '<div class="year-month-title">' +
-      '<span>' + mData.emoji + ' ' + mData.name + '</span>' +
+    '<div class="year-month-header">' +
+      '<span class="year-month-emoji">' + displayEmoji + '</span>' +
+      '<span class="year-month-name">' + mData.name + '</span>' +
       '<span class="year-month-sub">' + mData.sub + '</span>' +
     '</div>' +
     '<div class="year-cal-header">' + WEEKDAYS_SHORT.map(d => '<span>' + d + '</span>').join("") + '</div>' +
@@ -191,7 +211,7 @@ function buildMonthCard(year, mNum, todayStr) {
 // Unara: Info direkt im Feld, kein Popup
 function buildUnaraCard(year, todayStr) {
   const card = document.createElement("div");
-  card.className = "year-month-card year-special-card glass-card month-winter";
+  card.className = "year-month-card year-special-card glass-card month-special";
 
   const unaraDate = ewigToGreg(year, 0, 1);
   const unaraStr  = toLocalDateStr(unaraDate);
@@ -199,7 +219,7 @@ function buildUnaraCard(year, todayStr) {
 
   card.innerHTML =
     '<div class="special-card-title' + (isToday ? ' special-today' : '') + '">Unara ' + year + '</div>' +
-    '<div class="special-card-sub">Zeitloser Tag &middot; Tag 365</div>' +
+    '<div class="special-card-sub">Zeitloser Tag</div>' +
     '<div class="special-card-greg">' + formatGreg(unaraDate) + '</div>';
 
   return card;
@@ -208,7 +228,7 @@ function buildUnaraCard(year, todayStr) {
 // Intera: Info direkt im Feld, ausgegraut wenn kein Schaltjahr
 function buildInteraCard(year, leap, todayStr) {
   const card = document.createElement("div");
-  card.className = "year-month-card year-special-card glass-card month-winter" + (leap ? "" : " special-disabled");
+  card.className = "year-month-card year-special-card glass-card month-special" + (leap ? "" : " special-disabled");
 
   if (leap) {
     const interaDate = ewigToGreg(year, 0, 2);
@@ -217,13 +237,13 @@ function buildInteraCard(year, leap, todayStr) {
 
     card.innerHTML =
       '<div class="special-card-title' + (isToday ? ' special-today' : '') + '">Intera ' + year + '</div>' +
-      '<div class="special-card-sub">Zeitloser Tag &middot; Tag 366</div>' +
+      '<div class="special-card-sub">Zeitloser Tag</div>' +
       '<div class="special-card-greg">' + formatGreg(interaDate) + '</div>';
   } else {
     const nextLeap = getNextLeapYear(year);
     card.innerHTML =
       '<div class="special-card-title">Intera</div>' +
-      '<div class="special-card-sub">Zeitloser Tag &middot; Tag 366</div>' +
+      '<div class="special-card-sub">Zeitloser Tag</div>' +
       '<div class="special-card-next">Nächstes Schaltjahr: ' + nextLeap + '</div>';
   }
 
@@ -252,9 +272,11 @@ function showPopup(gregDateStr, event) {
     if (ss) seasonStartHtml = '<div class="popup-season-start ' + ss.cls + '">' + ss.label + '</div>';
   }
 
+  const popupSeason = ewig.isUnara || ewig.isIntera ? "winter" : ewig.popupSeason;
+
   content.innerHTML =
     seasonStartHtml +
-    '<div class="popup-ewig season-' + ewig.season + '">' + formatEwigReadable(ewig) + '</div>' +
+    '<div class="popup-ewig season-' + popupSeason + '">' + formatEwigReadable(ewig) + '</div>' +
     '<div class="popup-greg">' + formatGreg(date) + '</div>';
 
   card.style.visibility = "hidden";
