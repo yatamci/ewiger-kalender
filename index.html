@@ -39,7 +39,6 @@
           <span class="today-label">Heute</span>
           <span id="greg-today" class="today-date"></span>
         </div>
-        <div class="today-sep">·</div>
         <div class="today-col today-col-right">
           <span class="today-label">Ewiger Kalender</span>
           <span id="ewig-today" class="today-date ewig-date"></span>
@@ -57,8 +56,30 @@
         <div class="converter-block glass-card">
           <h2 class="converter-title">Gregorianisch &rarr; Ewig</h2>
           <div class="input-group">
-            <label>Datum eingeben</label>
-            <input type="date" id="greg-input" class="glass-input" />
+            <label>Tag</label>
+            <input type="number" id="greg-day-in" class="glass-input" placeholder="1–31" min="1" max="31" />
+          </div>
+          <div class="input-group">
+            <label>Monat</label>
+            <select id="greg-month-in" class="glass-input glass-select">
+              <option value="">– Monat wählen –</option>
+              <option value="1">Januar</option>
+              <option value="2">Februar</option>
+              <option value="3">März</option>
+              <option value="4">April</option>
+              <option value="5">Mai</option>
+              <option value="6">Juni</option>
+              <option value="7">Juli</option>
+              <option value="8">August</option>
+              <option value="9">September</option>
+              <option value="10">Oktober</option>
+              <option value="11">November</option>
+              <option value="12">Dezember</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label>Jahr</label>
+            <input type="number" id="greg-year-in" class="glass-input" placeholder="2026" min="1" max="9999" />
           </div>
           <button class="glass-btn primary" id="btn-greg-to-ewig">Umrechnen &rarr;</button>
           <div class="result-box" id="result-greg-to-ewig"></div>
@@ -67,8 +88,8 @@
         <div class="converter-block glass-card">
           <h2 class="converter-title">Ewig &rarr; Gregorianisch</h2>
           <div class="input-group">
-            <label>Jahr</label>
-            <input type="number" id="ewig-year" class="glass-input" placeholder="2026" min="1" max="9999" />
+            <label>Tag</label>
+            <input type="number" id="ewig-day" class="glass-input" placeholder="1–28" min="1" max="28" />
           </div>
           <div class="input-group">
             <label>Monat</label>
@@ -90,9 +111,9 @@
               <option value="0">Unara / Intera (Zeitloser Tag)</option>
             </select>
           </div>
-          <div class="input-group" id="ewig-day-group">
-            <label>Tag</label>
-            <input type="number" id="ewig-day" class="glass-input" placeholder="1–28" min="1" max="28" />
+          <div class="input-group" id="ewig-year-group">
+            <label>Jahr</label>
+            <input type="number" id="ewig-year" class="glass-input" placeholder="2026" min="1" max="9999" />
           </div>
           <button class="glass-btn primary" id="btn-ewig-to-greg">Umrechnen &rarr;</button>
           <div class="result-box" id="result-ewig-to-greg"></div>
