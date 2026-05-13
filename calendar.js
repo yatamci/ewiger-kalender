@@ -337,34 +337,52 @@ function setupDarkMode() {
 // ============================================================
 function setupConverter() {
   const today = new Date();
-  document.getElementById("greg-input").value = toLocalDateStr(today);
-  document.getElementById("ewig-year").value  = today.getFullYear();
+  document.getElementById("greg-day-in").value   = today.getDate();
+  document.getElementById("greg-month-in").value = today.getMonth() + 1;
+  document.getElementById("greg-year-in").value  = today.getFullYear();
+  document.getElementById("ewig-year").value     = today.getFullYear();
 
   document.getElementById("btn-greg-to-ewig").addEventListener("click", () => {
-    const val = document.getElementById("greg-input").value;
-    if (!val) return;
-    const date = fromLocalDateStr(val);
+    const day   = parseInt(document.getElementById("greg-day-in").value);
+    const month = parseInt(document.getElementById("greg-month-in").value);
+    const year  = parseInt(document.getElementById("greg-year-in").value);
+    if (!day || !month || !year) return;
+
+    const date = new Date(year, month - 1, day);
     const ewig = gregToEwig(date);
     const el   = document.getElementById("result-greg-to-ewig");
-    el.innerHTML = '<div class="result-main season-' + ewig.season + '"><div class="result-big">' + formatEwigReadable(ewig) + '</div></div>';
+    const popupSeason = ewig.isUnara || ewig.isIntera ? "winter" : ewig.popupSeason;
+
+    // Jahreszeitenanfang prüfen
+    let ssHtml = "";
+    if (!ewig.isUnara && !ewig.isIntera) {
+      const ss = SEASON_STARTS.find(s => s.month === ewig.month && s.day === ewig.day);
+      if (ss) ssHtml = '<div class="converter-season-start ' + ss.cls + '">' + ss.label + '</div>';
+    }
+
+    el.innerHTML =
+      ssHtml +
+      '<div class="result-main season-' + popupSeason + '"><div class="result-big">' + formatEwigReadable(ewig) + '</div></div>';
     el.classList.add("show");
   });
 
   document.getElementById("btn-ewig-to-greg").addEventListener("click", () => {
-    const year  = parseInt(document.getElementById("ewig-year").value);
+    const day   = parseInt(document.getElementById("ewig-day").value) || 1;
     const month = parseInt(document.getElementById("ewig-month").value);
-    const dayV  = document.getElementById("ewig-day").value;
+    const year  = parseInt(document.getElementById("ewig-year").value);
     if (!year || isNaN(month)) return;
-    let day = parseInt(dayV) || 1;
-    if (month !== 0) day = Math.max(1, Math.min(28, day));
-    const gregDate = ewigToGreg(year, month, day);
+
+    const clampedDay = month !== 0 ? Math.max(1, Math.min(28, day)) : day;
+    const gregDate = ewigToGreg(year, month, clampedDay);
     const el = document.getElementById("result-ewig-to-greg");
     el.innerHTML = '<div class="result-main"><div class="result-big">' + formatGreg(gregDate) + '</div></div>';
     el.classList.add("show");
   });
 
   document.getElementById("ewig-month").addEventListener("change", (e) => {
-    document.getElementById("ewig-day-group").style.display = e.target.value === "0" ? "none" : "";
+    const isSpecial = e.target.value === "0";
+    document.getElementById("ewig-day").placeholder = isSpecial ? "1=Unara, 2=Intera" : "1–28";
+    document.getElementById("ewig-day").max = isSpecial ? "2" : "28";
   });
 }
 
