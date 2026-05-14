@@ -2,7 +2,7 @@
 <html lang="de" data-theme="light">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Ewiger Kalender</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✨</text></svg>" />
   <link rel="stylesheet" href="style.css" />
@@ -51,19 +51,18 @@
       </div>
 
       <div class="year-controls glass-card">
-        <!-- Zurück-Button links (erscheint wenn Jahr > heute) -->
-        <button class="glass-btn goto-today-btn" id="btn-goto-today-prev" style="display:none">
-          ↩ 2026
-        </button>
-        <button class="glass-btn icon-btn" id="btn-year-prev">&#8249;</button>
-        <div class="year-display">
-          <span id="year-label">2026</span>
+        <!-- Zurück-Button links (absolut positioniert, erscheint wenn Jahr > heute) -->
+        <button class="glass-btn goto-today-btn" id="btn-goto-today-prev" style="display:none">↩ 2026</button>
+        <!-- Immer zentriert: Pfeil links, Jahr, Pfeil rechts -->
+        <div class="year-nav-center">
+          <button class="glass-btn icon-btn" id="btn-year-prev">&#8249;</button>
+          <div class="year-display">
+            <span id="year-label">2026</span>
+          </div>
+          <button class="glass-btn icon-btn" id="btn-year-next">&#8250;</button>
         </div>
-        <button class="glass-btn icon-btn" id="btn-year-next">&#8250;</button>
-        <!-- Zurück-Button rechts (erscheint wenn Jahr < heute) -->
-        <button class="glass-btn goto-today-btn" id="btn-goto-today-next" style="display:none">
-          2026 ↩
-        </button>
+        <!-- Zurück-Button rechts (absolut positioniert, erscheint wenn Jahr < heute) -->
+        <button class="glass-btn goto-today-btn" id="btn-goto-today-next" style="display:none">2026 ↩</button>
       </div>
 
       <div class="year-grid" id="year-grid"></div>
