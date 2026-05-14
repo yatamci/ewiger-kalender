@@ -8,14 +8,16 @@
   <link rel="stylesheet" href="style.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Playfair+Display:wght@700&display=swap" rel="stylesheet" />
 </head>
 <body>
   <div class="bg-orb orb-1"></div>
   <div class="bg-orb orb-2"></div>
   <div class="bg-orb orb-3"></div>
   <div class="bg-orb orb-4"></div>
+
   <div class="app-container">
+
     <header class="glass-header">
       <div class="header-inner">
         <div class="header-title">
@@ -33,7 +35,10 @@
         </button>
       </nav>
     </header>
+
+    <!-- Tab: Übersicht -->
     <section class="tab-content active" id="tab-uebersicht">
+
       <div class="today-card glass-card">
         <div class="today-col">
           <span class="today-label">Heute</span>
@@ -44,15 +49,31 @@
           <span id="ewig-today" class="today-date ewig-date"></span>
         </div>
       </div>
+
       <div class="year-controls glass-card">
+        <!-- Zurück-Button links (erscheint wenn Jahr > heute) -->
+        <button class="glass-btn goto-today-btn" id="btn-goto-today-prev" style="display:none">
+          ↩ 2026
+        </button>
         <button class="glass-btn icon-btn" id="btn-year-prev">&#8249;</button>
-        <div class="year-display"><span id="year-label">2026</span></div>
+        <div class="year-display">
+          <span id="year-label">2026</span>
+        </div>
         <button class="glass-btn icon-btn" id="btn-year-next">&#8250;</button>
+        <!-- Zurück-Button rechts (erscheint wenn Jahr < heute) -->
+        <button class="glass-btn goto-today-btn" id="btn-goto-today-next" style="display:none">
+          2026 ↩
+        </button>
       </div>
+
       <div class="year-grid" id="year-grid"></div>
+
     </section>
+
+    <!-- Tab: Konverter -->
     <section class="tab-content" id="tab-konverter">
       <div class="converter-wrap">
+
         <div class="converter-block glass-card">
           <h2 class="converter-title">Gregorianisch &rarr; Ewig</h2>
           <div class="input-group">
@@ -84,7 +105,9 @@
           <button class="glass-btn primary" id="btn-greg-to-ewig">Umrechnen &rarr;</button>
           <div class="result-box" id="result-greg-to-ewig"></div>
         </div>
+
         <div class="converter-divider">&#8596;</div>
+
         <div class="converter-block glass-card">
           <h2 class="converter-title">Ewig &rarr; Gregorianisch</h2>
           <div class="input-group">
@@ -111,20 +134,25 @@
               <option value="0">Unara / Intera (Zeitloser Tag)</option>
             </select>
           </div>
-          <div class="input-group" id="ewig-year-group">
+          <div class="input-group">
             <label>Jahr</label>
             <input type="number" id="ewig-year" class="glass-input" placeholder="2026" min="1" max="9999" />
           </div>
           <button class="glass-btn primary" id="btn-ewig-to-greg">Umrechnen &rarr;</button>
           <div class="result-box" id="result-ewig-to-greg"></div>
         </div>
+
       </div>
     </section>
+
   </div>
+
+  <!-- Popup: fixed, display:none by default -->
   <div id="popup-overlay" style="display:none"></div>
   <div class="glass-card" id="popup-card">
     <div id="popup-content"></div>
   </div>
+
   <script src="calendar.js"></script>
 </body>
 </html>
