@@ -252,13 +252,16 @@ function showPopup(gregDateStr, event) {
   requestAnimationFrame(() => {
     const cw=card.offsetWidth, ch=card.offsetHeight, mg=10;
     const vw=window.innerWidth, vh=window.innerHeight;
+    const sx=window.scrollX||window.pageXOffset;
+    const sy=window.scrollY||window.pageYOffset;
+    // clientX/Y = viewport-relativ; für absolute Position += scroll
     let x=event.clientX, y=event.clientY+14;
     if (x+cw+mg>vw) x=event.clientX-cw-mg;
     if (x<mg) x=mg;
     if (y+ch+mg>vh) y=event.clientY-ch-8;
     if (y<mg) y=mg;
-    card.style.left = x+"px";
-    card.style.top  = y+"px";
+    card.style.left = (x+sx)+"px";
+    card.style.top  = (y+sy)+"px";
     card.style.visibility = "visible";
     card.classList.add("popup-open");
   });
@@ -325,8 +328,15 @@ function setupConverter() {
     const year = parseInt(document.getElementById("ewig-year").value);
     if (!year||isNaN(mon)) return;
     const d = mon!==0?Math.max(1,Math.min(28,day)):day;
+    const gregDate = ewigToGreg(year,mon,d);
+    // Jahreszeitenanfang auch bei ewig->greg anzeigen
+    let ssHtml2 = "";
+    if (mon!==0) {
+      const ss2 = SEASON_STARTS.find(s=>s.month===mon&&s.day===d);
+      if (ss2) ssHtml2 = '<div class="converter-season-start '+ss2.cls+'">'+ss2.label+'</div>';
+    }
     const el = document.getElementById("result-ewig-to-greg");
-    el.innerHTML = '<div class="result-main"><div class="result-big">'+formatGreg(ewigToGreg(year,mon,d))+'</div></div>';
+    el.innerHTML = ssHtml2+'<div class="result-main"><div class="result-big">'+formatGreg(gregDate)+'</div></div>';
     el.classList.add("show");
   });
 
