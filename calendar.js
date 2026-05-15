@@ -322,7 +322,7 @@ function setupConverter() {
       if (ss) ssHtml = '<div class="converter-season-start '+ss.cls+'">'+ss.label+'</div>';
     }
     const el = document.getElementById("result-greg-to-ewig");
-    el.innerHTML = ssHtml+'<div class="result-main season-'+ps+'"><div class="result-big">'+formatEwigReadable(ewig)+'</div></div>';
+        el.innerHTML = ssHtml+'<div class="result-big">'+formatEwigReadable(ewig)+'</div>';
     el.classList.add("show");
   });
 
