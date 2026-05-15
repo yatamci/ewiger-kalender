@@ -124,8 +124,8 @@ function renderYearGrid(year) {
   // Zurück-zum-Jahr Buttons – Text dynamisch setzen
   const prevBtn = document.getElementById("btn-goto-today-prev");
   const nextBtn = document.getElementById("btn-goto-today-next");
-  if (prevBtn) { prevBtn.textContent = "↩ "+TODAY_YEAR; prevBtn.style.display = year > TODAY_YEAR ? "inline-flex" : "none"; }
-  if (nextBtn) { nextBtn.textContent = TODAY_YEAR+" ↩"; nextBtn.style.display = year < TODAY_YEAR ? "inline-flex" : "none"; }
+  if (prevBtn) { prevBtn.textContent = String(TODAY_YEAR); prevBtn.style.display = year > TODAY_YEAR ? "inline-flex" : "none"; }
+  if (nextBtn) { nextBtn.textContent = String(TODAY_YEAR); nextBtn.style.display = year < TODAY_YEAR ? "inline-flex" : "none"; }
 
   const leap = isLeapYear(year);
   const todayStr = toLocalDateStr(new Date());
@@ -198,9 +198,9 @@ function buildUnaraCard(year, todayStr) {
   const unaraDate = ewigToGreg(year,0,1);
   const isToday = toLocalDateStr(unaraDate)===todayStr;
   card.innerHTML =
-    '<div class="special-card-title'+(isToday?" special-today":"")+'">Unara '+year+'</div>'+
-    '<div class="special-card-sub">Zeitloser Tag</div>'+
-    '<div class="special-card-greg">'+formatGreg(unaraDate)+'</div>';
+    '<div class="special-row special-row-title'+(isToday?" special-today":"")+'">Unara '+year+'</div>'+
+    '<div class="special-row special-row-sub">Zeitloser Tag</div>'+
+    '<div class="special-row special-row-date">'+formatGreg(unaraDate)+'</div>';
   return card;
 }
 
@@ -211,15 +211,15 @@ function buildInteraCard(year, leap, todayStr) {
     const interaDate = ewigToGreg(year,0,2);
     const isToday = toLocalDateStr(interaDate)===todayStr;
     card.innerHTML =
-      '<div class="special-card-title'+(isToday?" special-today":"")+'">Intera '+year+'</div>'+
-      '<div class="special-card-sub">Zeitloser Tag</div>'+
-      '<div class="special-card-greg">'+formatGreg(interaDate)+'</div>';
+      '<div class="special-row special-row-title'+(isToday?" special-today":"")+'">Intera '+year+'</div>'+
+      '<div class="special-row special-row-sub">Zeitloser Tag</div>'+
+      '<div class="special-row special-row-date">'+formatGreg(interaDate)+'</div>';
   } else {
     let y=year+1; while(!isLeapYear(y)) y++;
     card.innerHTML =
-      '<div class="special-card-title">Intera</div>'+
-      '<div class="special-card-sub">Zeitloser Tag</div>'+
-      '<div class="special-card-next">Nächstes Schaltjahr: '+y+'</div>';
+      '<div class="special-row special-row-title">Intera</div>'+
+      '<div class="special-row special-row-sub">Zeitloser Tag</div>'+
+      '<div class="special-row special-row-date special-row-next">Nächstes Schaltjahr: '+y+'</div>';
   }
   return card;
 }
@@ -302,7 +302,11 @@ function setupConverter() {
   document.getElementById("greg-day-in").value   = today.getDate();
   document.getElementById("greg-month-in").value = today.getMonth()+1;
   document.getElementById("greg-year-in").value  = today.getFullYear();
-  document.getElementById("ewig-year").value     = today.getFullYear();
+  // Prefill ewig-to-greg with today's ewiger date
+  const todayEwig = gregToEwig(today);
+  document.getElementById("ewig-day").value   = todayEwig.isUnara||todayEwig.isIntera ? todayEwig.day : todayEwig.day;
+  document.getElementById("ewig-month").value = todayEwig.month;
+  document.getElementById("ewig-year").value  = todayEwig.year;
 
   document.getElementById("btn-greg-to-ewig").addEventListener("click",()=>{
     const day  = parseInt(document.getElementById("greg-day-in").value);
