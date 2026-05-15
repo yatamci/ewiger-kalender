@@ -19,7 +19,7 @@
   --text-light:      rgba(26,26,46,0.36);
   --body-bg: linear-gradient(135deg,#e8f4fd 0%,#f0e8fb 30%,#fde8f0 60%,#fdf5e8 100%);
   --spring-accent:#66bb6a; --spring-deep:#2e7d32; --spring-glass:rgba(102,187,106,.12); --spring-border:rgba(102,187,106,.28); --spring-text:#1b5e20;
-  --summer-accent:#ffd740; --summer-deep:#f57f17; --summer-glass:rgba(255,215,64,.14);  --summer-border:rgba(255,215,64,.40);  --summer-text:#7a4f00;
+  --summer-accent:#ffd740; --summer-deep:#f57f17; --summer-glass:rgba(255,215,64,.14);  --summer-border:rgba(255,215,64,.40);  --summer-text:#f57f17;
   --autumn-accent:#ef6c00; --autumn-deep:#bf360c; --autumn-glass:rgba(239,108,0,.12);   --autumn-border:rgba(239,108,0,.28);   --autumn-text:#bf360c;
   --winter-accent:#5c6bc0; --winter-deep:#283593; --winter-glass:rgba(92,107,192,.12);  --winter-border:rgba(92,107,192,.28);  --winter-text:#1a237e;
   --radius-sm:12px; --radius-md:18px; --radius-lg:24px; --radius-xl:32px;
@@ -151,10 +151,10 @@ h1{font-family:'Playfair Display',Georgia,serif;font-size:clamp(1.7rem,5vw,2.6re
 [data-theme="dark"] .year-month-card.month-special{border-color:rgba(170,120,255,.32)}
 
 /* Monatsheader */
-.year-month-header{display:grid;grid-template-columns:repeat(7,1fr);align-items:start;margin-bottom:7px;gap:0}
-.year-month-emoji{font-size:.88rem;line-height:1.2;grid-column:1;justify-self:center}
+.year-month-header{display:grid;grid-template-columns:repeat(7,1fr);align-items:center;margin-bottom:7px;gap:0}
+.year-month-emoji{font-size:.82rem;line-height:1.2;grid-column:1;justify-self:center;white-space:nowrap}
 .year-month-name{font-size:.90rem;font-weight:800;color:var(--text-primary);text-align:center;line-height:1.2;grid-column:2/7}
-.year-month-sub{font-size:.62rem;font-weight:600;color:var(--text-secondary);text-align:center;line-height:1.2;grid-column:7;justify-self:center}
+.year-month-sub{font-size:.62rem;font-weight:600;color:var(--text-secondary);text-align:center;line-height:1.2;grid-column:7;justify-self:center;align-self:center;padding-top:1px}
 
 /* Wochentag-Header */
 .year-cal-header{display:grid;grid-template-columns:repeat(7,1fr);margin-bottom:2px}
@@ -188,7 +188,7 @@ h1{font-family:'Playfair Display',Georgia,serif;font-size:clamp(1.7rem,5vw,2.6re
 [data-theme="dark"] .special-row-title.special-today{color:rgba(180,130,255,.95)}
 .special-row-sub{font-size:.62rem;font-weight:700;letter-spacing:.10em;text-transform:uppercase;color:var(--text-light);min-height:1.4rem;align-items:center}
 .special-row-date{font-size:.78rem;font-weight:600;color:var(--text-secondary);line-height:1.5;min-height:1.8rem;align-items:flex-start}
-.special-row-next{color:var(--text-light);font-style:italic;font-size:.74rem}
+.special-row-next{color:var(--text-light);font-style:normal;font-size:.74rem}
 .special-disabled{opacity:var(--disabled-opacity)}
 .disabled-day{cursor:default;opacity:var(--disabled-opacity)}
 
@@ -271,4 +271,21 @@ h1{font-family:'Playfair Display',Georgia,serif;font-size:clamp(1.7rem,5vw,2.6re
   .year-months-row{grid-template-columns:1fr}
   .tab-btn{font-size:.76rem;padding:11px 4px}
   h1{text-align:center}
+}
+
+
+/* ── iOS Safe Area (Notch + Home Bar) ─────────────────────────────────────── */
+@supports(padding-top: env(safe-area-inset-top)) {
+  body {
+    padding-top: env(safe-area-inset-top);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .app-container {
+    padding-bottom: calc(80px + env(safe-area-inset-bottom));
+  }
+  .glass-header {
+    margin-top: 0; /* header already accounts for top safe area via body padding */
+  }
 }
