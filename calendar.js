@@ -121,6 +121,21 @@ let currentYear = TODAY_YEAR;
 function renderYearGrid(year) {
   document.getElementById("year-label").textContent = year;
 
+  // Year-Select befüllen
+  const sel = document.getElementById("year-select");
+  if (sel) {
+    sel.innerHTML = "";
+    const minY = Math.min(year, TODAY_YEAR) - 10;
+    const maxY = Math.max(year, TODAY_YEAR) + 10;
+    for (let y = minY; y <= maxY; y++) {
+      const opt = document.createElement("option");
+      opt.value = y; opt.textContent = y;
+      if (y === year) opt.selected = true;
+      sel.appendChild(opt);
+    }
+    sel.onchange = (e) => { currentYear = parseInt(e.target.value); renderYearGrid(currentYear); };
+  }
+
   // Zurück-zum-Jahr Buttons – Text dynamisch setzen
   const prevBtn = document.getElementById("btn-goto-today-prev");
   const nextBtn = document.getElementById("btn-goto-today-next");
