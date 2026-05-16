@@ -125,8 +125,8 @@ function renderYearGrid(year) {
   const sel = document.getElementById("year-select");
   if (sel) {
     sel.innerHTML = "";
-    const minY = Math.min(year, TODAY_YEAR) - 10;
-    const maxY = Math.max(year, TODAY_YEAR) + 10;
+    const minY = Math.min(year, TODAY_YEAR) - 200;
+    const maxY = Math.max(year, TODAY_YEAR) + 200;
     for (let y = minY; y <= maxY; y++) {
       const opt = document.createElement("option");
       opt.value = y; opt.textContent = y;
