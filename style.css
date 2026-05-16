@@ -49,8 +49,8 @@
    RESET
    ============================================================ */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth;overflow-y:scroll;height:-webkit-fill-available}
-body{font-family:'Nunito',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--body-bg);min-height:100vh;min-height:-webkit-fill-available;color:var(--text-primary);overflow-x:hidden;-webkit-font-smoothing:antialiased;transition:background .4s,color .3s;padding-top:env(safe-area-inset-top);padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right)}
+html{scroll-behavior:smooth;overflow-y:scroll;height:-webkit-fill-available;background:var(--body-bg);background-attachment:fixed}
+body{font-family:'Nunito',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--body-bg);background-attachment:fixed;min-height:100vh;min-height:-webkit-fill-available;color:var(--text-primary);overflow-x:hidden;-webkit-font-smoothing:antialiased;transition:background .4s,color .3s;padding-top:env(safe-area-inset-top);padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right)}
 
 /* ============================================================
    ORBS  (will-change für GPU-Beschleunigung)
@@ -118,7 +118,7 @@ h1{font-family:'Playfair Display',Georgia,serif;font-size:clamp(1.7rem,5vw,2.6re
 /* ============================================================
    JAHRESSTEUERUNG
    ============================================================ */
-.year-controls{display:flex;align-items:center;justify-content:center;padding:13px 20px;margin-bottom:18px;position:relative}
+.year-controls{display:flex;align-items:center;justify-content:center;padding:13px 20px;margin-bottom:18px;position:relative;overflow:visible}
 .year-nav-center{display:flex;align-items:center;gap:10px}.year-display{display:flex;align-items:center;min-width:90px;justify-content:center}
 #year-label{font-family:'Playfair Display',serif;font-size:1.9rem;font-weight:700;color:var(--text-primary)}
 
@@ -153,8 +153,8 @@ h1{font-family:'Playfair Display',Georgia,serif;font-size:clamp(1.7rem,5vw,2.6re
 /* Monatsheader */
 .year-month-header{display:grid;grid-template-columns:repeat(7,1fr);align-items:center;margin-bottom:7px;gap:0}
 .year-month-emoji{font-size:.82rem;line-height:1.2;grid-column:1;justify-self:center;white-space:nowrap}
-.year-month-name{font-size:.90rem;font-weight:800;color:var(--text-primary);text-align:center;line-height:1.2;grid-column:2/7}
-.year-month-sub{font-size:.62rem;font-weight:600;color:var(--text-secondary);text-align:center;line-height:1.2;grid-column:7;justify-self:center;align-self:center;padding-top:1px}
+.year-month-name{font-size:.90rem;font-weight:800;color:var(--text-primary);text-align:center;line-height:1.2;grid-column:2/7;padding-right:.2rem}
+.year-month-sub{font-size:.60rem;font-weight:600;color:var(--text-secondary);text-align:right;line-height:1.2;grid-column:6/8;justify-self:end;align-self:center;padding-right:.1rem}
 
 /* Wochentag-Header */
 .year-cal-header{display:grid;grid-template-columns:repeat(7,1fr);margin-bottom:2px}
@@ -237,8 +237,8 @@ h1{font-family:'Playfair Display',Georgia,serif;font-size:clamp(1.7rem,5vw,2.6re
 .glass-select{cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='2' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 11px center;padding-right:34px}
 [data-theme="dark"] .glass-input option{background:#1a2035;color:rgba(255,255,255,.88)}
 .result-box{max-height:0;overflow:hidden;opacity:0;transition:max-height .4s,opacity .3s,padding .3s;border-radius:var(--radius-sm)}
-.result-box.show{max-height:160px;opacity:1;padding:11px;background:var(--glass-bg);border:1.5px solid var(--glass-border)}
-.result-big{font-size:.96rem;font-weight:800;color:var(--text-primary)}
+.result-box.show{max-height:160px;opacity:1;padding:11px;background:var(--glass-bg);border:1.5px solid var(--glass-border);min-height:52px;display:flex;align-items:center}
+.result-big{font-size:.96rem;font-weight:800;color:var(--text-primary);width:100%}
 .result-main{padding:6px 8px;border-radius:var(--radius-sm)}
 .result-main.season-spring{background:var(--spring-glass)}
 .result-main.season-summer{background:var(--summer-glass)}
@@ -262,8 +262,9 @@ h1{font-family:'Playfair Display',Georgia,serif;font-size:clamp(1.7rem,5vw,2.6re
   h1{text-align:center}
   .header-sub{text-align:center}
   .year-months-row{grid-template-columns:repeat(2,1fr)}
-  .goto-today-btn{font-size:.70rem;padding:5px 9px;position:static}
-  .goto-today-btn#btn-goto-today-prev,.goto-today-btn#btn-goto-today-next{position:static}
+  .goto-today-btn{font-size:.70rem;padding:5px 9px}
+  .goto-today-btn#btn-goto-today-prev{right:calc(50% + 88px)}
+  .goto-today-btn#btn-goto-today-next{left:calc(50% + 88px)}
   .converter-season-start{text-align:center}
 }
 
@@ -289,3 +290,9 @@ h1{font-family:'Playfair Display',Georgia,serif;font-size:clamp(1.7rem,5vw,2.6re
     margin-top: 0; /* header already accounts for top safe area via body padding */
   }
 }
+
+/* Year dropdown: invisible native select over the year label */
+.year-label-wrap{position:relative;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;min-width:90px}
+.year-label-wrap select.year-select{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;font-size:1rem;border:none;background:transparent}
+#year-label{cursor:pointer;user-select:none;border-bottom:1.5px dashed transparent;transition:border-color .2s}
+#year-label:hover{border-bottom-color:var(--text-light)}
