@@ -355,7 +355,7 @@ function setupConverter() {
       if (ss2) ssHtml2 = '<div class="converter-season-start '+ss2.cls+'">'+ss2.label+'</div>';
     }
     const el = document.getElementById("result-ewig-to-greg");
-    el.innerHTML = ssHtml2+'<div class="result-main"><div class="result-big">'+formatGreg(gregDate)+'</div></div>';
+    el.innerHTML = ssHtml2+'<div class="result-big">'+formatGreg(gregDate)+'</div>';
     el.classList.add("show");
   });
 
