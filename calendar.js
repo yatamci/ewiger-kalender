@@ -256,10 +256,12 @@ function showPopup(gregDateStr, event) {
     if (ss) ssHtml = '<div class="popup-season-start '+ss.cls+'">'+ss.label+'</div>';
   }
 
+  const extraHtml = buildExtraInfo(date, ewig);
   content.innerHTML =
     ssHtml+
     '<div class="popup-ewig season-'+ps+'">'+formatEwigReadable(ewig)+'</div>'+
-    '<div class="popup-greg">'+formatGreg(date)+'</div>';
+    '<div class="popup-greg">'+formatGreg(date)+'</div>'+
+    extraHtml;
 
   card.style.visibility = "hidden";
   card.style.display    = "block";
@@ -337,7 +339,7 @@ function setupConverter() {
       if (ss) ssHtml = '<div class="converter-season-start '+ss.cls+'">'+ss.label+'</div>';
     }
     const el = document.getElementById("result-greg-to-ewig");
-        el.innerHTML = ssHtml+'<div class="result-big">'+formatEwigReadable(ewig)+'</div>';
+        el.innerHTML = ssHtml+'<div class="result-big">'+formatEwigReadable(ewig)+'</div>'+buildExtraInfo(date,ewig);
     el.classList.add("show");
   });
 
@@ -355,7 +357,8 @@ function setupConverter() {
       if (ss2) ssHtml2 = '<div class="converter-season-start '+ss2.cls+'">'+ss2.label+'</div>';
     }
     const el = document.getElementById("result-ewig-to-greg");
-    el.innerHTML = ssHtml2+'<div class="result-big">'+formatGreg(gregDate)+'</div>';
+    const ewigInfo = gregToEwig(gregDate);
+    el.innerHTML = ssHtml2+'<div class="result-big">'+formatGreg(gregDate)+'</div>'+buildExtraInfo(gregDate,ewigInfo);
     el.classList.add("show");
   });
 
