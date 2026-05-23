@@ -294,7 +294,6 @@ function buildUnaraCard(year, todayStr) {
   card.innerHTML =
     '<div class="special-row special-row-title'+(isToday?" special-today":"")+'">Unara '+year+'</div>'+
     '<div class="special-row special-row-sub">Zeitloser Tag</div>'+
-    '<div class="special-divider"></div>'+
     '<div class="special-row special-row-date">'+formatGreg(unaraDate)+'</div>'+
     buildExtraInfo(unaraDate,{isUnara:true,isIntera:false,year:year,month:0,day:1,season:'winter'});
   return card;
@@ -310,7 +309,6 @@ function buildInteraCard(year, leap, todayStr) {
     card.innerHTML =
       '<div class="special-row special-row-title'+(isToday?" special-today":"")+'">Intera '+year+'</div>'+
       '<div class="special-row special-row-sub">Zeitloser Tag</div>'+
-      '<div class="special-divider"></div>'+
       '<div class="special-row special-row-date">'+formatGreg(interaDate)+'</div>'+
       buildExtraInfo(interaDate, interaEwig);
   } else {
@@ -318,7 +316,6 @@ function buildInteraCard(year, leap, todayStr) {
     card.innerHTML =
       '<div class="special-row special-row-title">Intera</div>'+
       '<div class="special-row special-row-sub">Zeitloser Tag</div>'+
-      '<div class="special-divider"></div>'+
       '<div class="special-row special-row-date special-row-next">Nächstes Schaltjahr: '+y+'</div>';
   }
   return card;
