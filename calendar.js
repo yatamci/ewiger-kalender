@@ -331,6 +331,8 @@ function showPopup(gregDateStr, event) {
   const card  = document.getElementById("popup-card");
   const content = document.getElementById("popup-content");
   const ps = ewig.isUnara||ewig.isIntera ? "winter" : ewig.popupSeason;
+  card.innerHTML = content; 
+  card.classList.add("popup-open");
 
   let ssHtml = "";
   if (!ewig.isUnara&&!ewig.isIntera) {
