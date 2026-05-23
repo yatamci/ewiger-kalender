@@ -380,9 +380,29 @@ body::after {
 }
 
 /* Alle Texte im Popup zentrieren */
-#popup-card, 
+#popup-card {
+  display: none;
+  position: fixed; /* Fixiert im Fenster, nicht absolut im Container */
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  z-index: 9999;
+  padding: 16px;
+  min-width: 240px;
+  max-width: 80vw;
+  text-align: center;
+  background: var(--glass-bg-strong);
+  backdrop-filter: var(--glass-blur);
+  border: 1.5px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--glass-shadow-lg);
+}
+
+/* Erzwinge Zentrierung für alle Inhalte */
 #popup-card * {
   text-align: center !important;
+  justify-content: center;
+  align-items: center;
 }
 
 .extra-info {
