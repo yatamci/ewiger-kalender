@@ -366,6 +366,7 @@ body::after {
   margin-top: 8px;
   padding-top: 8px;
   border-top: 1px solid var(--glass-border);
+   align-items: center;
 }
 .extra-info span {
   font-size: .76rem;
@@ -374,9 +375,9 @@ body::after {
   text-align: center;
   line-height: 1.4;
 }
-/* In popup: left-aligned */
+/* In popup: center-aligned */
 #popup-content .extra-info span {
-  text-align: left;
+  text-align: center;
 }
 /* In result-box: centered (inherits from parent) */
 .result-box{
