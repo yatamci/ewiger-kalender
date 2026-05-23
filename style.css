@@ -181,9 +181,9 @@ h1{font-family:'Playfair Display',Georgia,serif;font-size:clamp(1.7rem,5vw,2.6re
    SONDERKARTEN (Unara / Intera)
    ============================================================ */
 /* Special cards: CSS grid so Unara and Intera rows align perfectly */
-.year-special-card{padding:16px 12px;display:grid;grid-template-rows:auto auto auto;gap:0;align-content:center;text-align:center}
-.special-row{display:flex;align-items:center;justify-content:center;min-height:1.6rem}
-.special-row-title{font-family:'Nunito',sans-serif;font-size:1.02rem;font-weight:900;color:var(--text-primary);line-height:1.3;letter-spacing:.01em;align-items:flex-end;min-height:2rem}
+.year-special-card{padding:14px 12px;display:flex;flex-direction:column;gap:0;align-items:center;text-align:center}
+.special-row{display:flex;align-items:center;justify-content:center;min-height:1.4rem}
+.special-row-title{font-family:'Nunito',sans-serif;font-size:.90rem;font-weight:800;color:var(--text-primary);line-height:1.2;letter-spacing:.01em;align-items:center;min-height:1.2rem}
 .special-row-title.special-today{color:rgba(110,60,200,.9)}
 [data-theme="dark"] .special-row-title.special-today{color:rgba(180,130,255,.95)}
 .special-row-sub{font-size:.62rem;font-weight:700;letter-spacing:.10em;text-transform:uppercase;color:var(--text-light);min-height:1.4rem;align-items:center}
@@ -381,4 +381,14 @@ body::after {
 /* In result-box: centered (inherits from parent) */
 .result-box .extra-info span {
   text-align: center;
+}
+
+.year-special-card .extra-info {
+  margin-top: 6px;
+  padding-top: 6px;
+  width: 100%;
+}
+.year-special-card .extra-info span {
+  text-align: center;
+  font-size: .70rem;
 }
