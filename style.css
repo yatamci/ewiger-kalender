@@ -363,68 +363,61 @@ body::after {
    ============================================================ */
 
 /* 1. Popup-Inhalt zentrieren */
-#popup-content {
+#popup-card {
+  display: none;
+  position: absolute;
+  z-index: 9999;
+  padding: 16px;
+  min-width: 220px;
+  max-width: 320px;
   text-align: center;
+  /* Wichtig für die Zentrierung des Inhalts */
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+}
+
+#popup-card.popup-open {
+  display: flex; /* Flex statt block für bessere Zentrierung */
 }
 
 /* 2. Datum und Extra-Info zentrieren */
 .popup-ewig, 
-.popup-greg, 
-.extra-info span {
+.popup-greg {
   text-align: center;
   display: block;
+  width: 100%;
 }
 
-/* 3. Extra-Info Container */
+/* 3. Extra-Info Container sauber zentrieren */
 .extra-info {
   display: flex;
   flex-direction: column;
-  gap: 3px;
-  margin-top: 8px;
-  padding-top: 8px;
+  gap: 4px;
+  margin-top: 10px;
+  padding-top: 10px;
   border-top: 1px solid var(--glass-border);
-  align-items: center; /* Zentriert die Boxen horizontal */
+  align-items: center; 
+  width: 100%;
 }
 
-/* 4. Sicherstellen, dass KEIN text-align: left existiert */
-/* Entferne jede Zeile, die #popup-content .extra-info span { text-align: left; } lautet */
+.extra-info span {
+  text-align: center;
+  display: block;
+  width: 100%;
+}
+
+/* 4. Sicherstellen, dass kein 'text-align: left' das überschreibt */
+#popup-content .extra-info span {
+  text-align: center !important;
+}
 
 /* 5. Result-Box Design */
 .result-box {
-  height: 0;
-  overflow: hidden;
-  opacity: 0;
-  transition: height .4s, opacity .3s, padding .3s;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--text-light); 
-}
-
-.result-box.show {
-  max-height: none;
-  min-height: 70px;
-  height: auto;
-  opacity: 1;
-  padding: 10px 14px;
-  background: var(--glass-bg);
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 4px;
-}
-
-.result-box hr {
-  width: 80%;
-  border: 0;
-  border-top: 1px solid var(--text-light);
-  margin: 5px 0;
-}
-
-.year-special-card .extra-info {
-  margin-top: 6px;
-  padding-top: 6px;
-  width: 100%;
+  text-align: center;
 }
