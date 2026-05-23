@@ -181,13 +181,13 @@ h1{font-family:'Playfair Display',Georgia,serif;font-size:clamp(1.7rem,5vw,2.6re
    SONDERKARTEN (Unara / Intera)
    ============================================================ */
 /* Special cards: CSS grid so Unara and Intera rows align perfectly */
-.year-special-card{padding:14px 12px;display:flex;flex-direction:column;gap:0;align-items:center;text-align:center}
+.year-special-card{padding:14px 12px 14px;display:flex;flex-direction:column;gap:0;align-items:center;text-align:center}
 .special-row{display:flex;align-items:center;justify-content:center;min-height:1.4rem}
 .special-row-title{font-family:'Nunito',sans-serif;font-size:.90rem;font-weight:800;color:var(--text-primary);line-height:1.2;letter-spacing:.01em;align-items:center;min-height:1.2rem}
 .special-row-title.special-today{color:rgba(110,60,200,.9)}
 [data-theme="dark"] .special-row-title.special-today{color:rgba(180,130,255,.95)}
-.special-row-sub{font-size:.62rem;font-weight:700;letter-spacing:.10em;text-transform:uppercase;color:var(--text-light);min-height:1.4rem;align-items:center}
-.special-row-date{font-size:.78rem;font-weight:600;color:var(--text-secondary);line-height:1.5;min-height:1.8rem;align-items:flex-start}
+.special-row-sub{font-size:.62rem;font-weight:700;letter-spacing:.10em;text-transform:uppercase;color:var(--text-light);min-height:auto;align-items:center;margin-bottom:0}
+.special-row-date{font-size:.78rem;font-weight:600;color:var(--text-secondary);line-height:1.5;min-height:auto;align-items:center;margin-top:8px}
 .special-row-next{color:var(--text-light);font-style:normal;font-size:.74rem}
 .special-disabled{opacity:var(--disabled-opacity)}
 .disabled-day{cursor:default;opacity:var(--disabled-opacity)}
@@ -244,7 +244,7 @@ h1{font-family:'Playfair Display',Georgia,serif;font-size:clamp(1.7rem,5vw,2.6re
 .result-main.season-summer{background:var(--summer-glass)}
 .result-main.season-autumn{background:var(--autumn-glass)}
 .result-main.season-winter{background:var(--winter-glass)}
-.converter-season-start{font-size:.78rem;font-weight:800;padding:5px 8px;border-radius:var(--radius-sm);margin-bottom:0;text-align:center;width:100%}
+.converter-season-start{font-size:.78rem;font-weight:800;padding:5px 10px;border-radius:var(--radius-sm);margin-bottom:0;text-align:center;display:inline-block}
 .converter-season-start.season-start-spring{color:var(--spring-deep);background:var(--spring-glass);border:1px solid var(--spring-border)}
 .converter-season-start.season-start-summer{color:var(--summer-deep);background:var(--summer-glass);border:1px solid var(--summer-border)}
 .converter-season-start.season-start-autumn{color:var(--autumn-deep);background:var(--autumn-glass);border:1px solid var(--autumn-border)}
@@ -368,7 +368,7 @@ body::after {
   border-top: 1px solid var(--glass-border);
 }
 .extra-info span {
-  font-size: .76rem;
+  font-size: .78rem;
   font-weight: 600;
   color: var(--text-secondary);
   text-align: center;
@@ -384,11 +384,17 @@ body::after {
 }
 
 .year-special-card .extra-info {
-  margin-top: 6px;
-  padding-top: 6px;
+  margin-top: 8px;
+  padding-top: 0;
   width: 100%;
+  border-top: none;  /* no extra border, divider already present */
+  margin-bottom: 0;
 }
 .year-special-card .extra-info span {
   text-align: center;
-  font-size: .70rem;
+  font-size: .78rem;  /* same as .special-row-date */
+  color: var(--text-secondary);
+  font-weight: 600;
 }
+
+.special-divider{height:1px;background:var(--glass-border);width:calc(100% - 16px);margin:8px 0;flex-shrink:0}
