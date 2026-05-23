@@ -408,3 +408,15 @@ body::after {
   width: 100%;
    text-align: center;
 }
+
+/* Stellt sicher, dass alle inneren Text- und Block-Elemente im Popup zentriert sind */
+#popup-card p,
+#popup-card h2,
+#popup-card h3,
+#popup-card div,
+#popup-card span {
+  text-align: center;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
