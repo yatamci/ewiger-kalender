@@ -9,10 +9,402 @@
   <meta name="theme-color" content="#e8f4fd" media="(prefers-color-scheme: light)" />
   <title>Ewiger Kalender</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✨</text></svg>" />
-  <link rel="stylesheet" href="style.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Playfair+Display:wght@700&display=swap" rel="stylesheet" />
+  
+  <style>
+    /* ============================================================
+       EWIGER KALENDER – Liquid Glass + Polarlicht Dark Mode
+       ============================================================ */
+
+    /* ============================================================
+       TOKENS
+       ============================================================ */
+    :root {
+      --glass-bg:        rgba(255,255,255,0.20);
+      --glass-bg-strong: rgba(255,255,255,0.28);
+      --glass-border:    rgba(255,255,255,0.48);
+      --glass-shadow:    0 6px 24px rgba(0,0,0,0.09), 0 2px 6px rgba(0,0,0,0.05);
+      --glass-shadow-lg: 0 16px 48px rgba(0,0,0,0.12), 0 4px 12px rgba(0,0,0,0.06);
+      --glass-blur:      blur(18px) saturate(170%);
+      --text-primary:    #1a1a2e;
+      --text-secondary:  rgba(26,26,46,0.58);
+      --text-light:      rgba(26,26,46,0.36);
+      --body-bg: linear-gradient(135deg,#e8f4fd 0%,#f0e8fb 30%,#fde8f0 60%,#fdf5e8 100%);
+      --spring-accent:#66bb6a; --spring-deep:#2e7d32; --spring-glass:rgba(102,187,106,.12); --spring-border:rgba(102,187,106,.28); --spring-text:#1b5e20;
+      --summer-accent:#ffd740; --summer-deep:#f57f17; --summer-glass:rgba(255,215,64,.14);  --summer-border:rgba(255,215,64,.40);  --summer-text:#f57f17;
+      --autumn-accent:#ef6c00; --autumn-deep:#bf360c; --autumn-glass:rgba(239,108,0,.12);   --autumn-border:rgba(239,108,0,.28);   --autumn-text:#bf360c;
+      --winter-accent:#5c6bc0; --winter-deep:#283593; --winter-glass:rgba(92,107,192,.12);  --winter-border:rgba(92,107,192,.28);  --winter-text:#1a237e;
+      --radius-sm:12px; --radius-md:18px; --radius-lg:24px; --radius-xl:32px;
+      --tab-line: linear-gradient(90deg,#667eea,#764ba2);
+      --disabled-opacity:.36;
+    }
+
+    [data-theme="dark"] {
+      --glass-bg:        rgba(255,255,255,0.055);
+      --glass-bg-strong: rgba(255,255,255,0.095);
+      --glass-border:    rgba(255,255,255,0.12);
+      --glass-shadow:    0 6px 24px rgba(0,0,0,0.40), 0 2px 6px rgba(0,0,0,0.24);
+      --glass-shadow-lg: 0 16px 48px rgba(0,0,0,0.55), 0 4px 12px rgba(0,0,0,0.32);
+      --text-primary:    rgba(255,255,255,0.92);
+      --text-secondary:  rgba(255,255,255,0.50);
+      --text-light:      rgba(255,255,255,0.25);
+      --body-bg: linear-gradient(135deg,#0a0e1a 0%,#0d1a2e 25%,#0a1628 50%,#0f0d1e 75%,#0a1220 100%);
+      --spring-accent:#69f0ae; --spring-deep:#69f0ae; --spring-glass:rgba(105,240,174,.09); --spring-border:rgba(105,240,174,.20); --spring-text:#69f0ae;
+      --summer-accent:#ffd740; --summer-deep:#ffd740; --summer-glass:rgba(255,215,64,.09);  --summer-border:rgba(255,215,64,.20);  --summer-text:#ffd740;
+      --autumn-accent:#ff6d00; --autumn-deep:#ffab40; --autumn-glass:rgba(255,109,0,.09);   --autumn-border:rgba(255,109,0,.20);   --autumn-text:#ffab40;
+      --winter-accent:#82b1ff; --winter-deep:#82b1ff; --winter-glass:rgba(130,177,255,.09); --winter-border:rgba(130,177,255,.20); --winter-text:#82b1ff;
+      --tab-line: linear-gradient(90deg,#82b1ff,#ce93d8);
+      --disabled-opacity:.20;
+    }
+
+    /* ============================================================
+       RESET
+       ============================================================ */
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth;overflow-y:scroll;background:var(--body-bg);background-attachment:fixed;background-color:#e8f4fd}
+    body{font-family:'Nunito',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--body-bg);background-attachment:fixed;min-height:100vh;min-height:100dvh;color:var(--text-primary);overflow-x:hidden;-webkit-font-smoothing:antialiased;transition:background .4s,color .3s;padding-top:env(safe-area-inset-top);padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right)}
+
+    /* ============================================================
+       ORBS
+       ============================================================ */
+    .bg-orb{position:fixed;border-radius:50%;filter:blur(70px);pointer-events:none;z-index:0;will-change:transform;animation:orb-drift 16s ease-in-out infinite alternate}
+    [data-theme="light"] .orb-1{width:480px;height:480px;background:radial-gradient(circle,#a8edea,#fed6e3);opacity:.30;top:-100px;left:-130px}
+    [data-theme="light"] .orb-2{width:380px;height:380px;background:radial-gradient(circle,#ffecd2,#fcb69f);opacity:.25;top:40%;right:-90px;animation-delay:-4s}
+    [data-theme="light"] .orb-3{width:320px;height:320px;background:radial-gradient(circle,#d4e8d0,#e8f5e9);opacity:.22;bottom:10%;left:18%;animation-delay:-8s}
+    [data-theme="light"] .orb-4{width:280px;height:280px;background:radial-gradient(circle,#a18cd1,#fbc2eb);opacity:.22;bottom:-40px;right:18%;animation-delay:-12s}
+    [data-theme="dark"] .orb-1{width:560px;height:560px;background:radial-gradient(circle,rgba(0,200,150,.5),rgba(0,100,200,.3),transparent);opacity:.25;top:-130px;left:-180px;animation-duration:20s}
+    [data-theme="dark"] .orb-2{width:460px;height:460px;background:radial-gradient(circle,rgba(100,0,200,.4),rgba(200,0,150,.25),transparent);opacity:.20;top:30%;right:-130px;animation-delay:-5s;animation-duration:22s}
+    [data-theme="dark"] .orb-3{width:400px;height:400px;background:radial-gradient(circle,rgba(0,150,255,.4),rgba(0,200,150,.25),transparent);opacity:.18;bottom:5%;left:8%;animation-delay:-10s;animation-duration:24s}
+    [data-theme="dark"] .orb-4{width:360px;height:360px;background:radial-gradient(circle,rgba(150,0,255,.3),rgba(0,100,200,.25),transparent);opacity:.16;bottom:-70px;right:12%;animation-delay:-15s;animation-duration:18s}
+    @keyframes orb-drift{0%{transform:translate(0,0) scale(1)}100%{transform:translate(44px,60px) scale(1.10)}}
+
+    /* ============================================================
+       LAYOUT
+       ============================================================ */
+    .app-container{position:relative;z-index:1;max-width:960px;margin:0 auto;padding:20px 16px calc(80px + env(safe-area-inset-bottom))}
+
+    .glass-card{background:var(--glass-bg-strong);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:1.5px solid var(--glass-border);border-radius:var(--radius-lg);box-shadow:var(--glass-shadow);transition:box-shadow .3s,background .4s,border-color .4s;position:relative}
+
+    /* ============================================================
+       HEADER
+       ============================================================ */
+    .glass-header{background:var(--glass-bg-strong);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:1.5px solid var(--glass-border);border-radius:var(--radius-xl);box-shadow:var(--glass-shadow-lg);padding:22px 26px 0;margin-bottom:18px;overflow:hidden;transition:background .4s,border-color .4s}
+    .header-inner{display:flex;flex-direction:column;align-items:center;gap:5px;padding-bottom:18px}
+    .header-title{display:flex;align-items:center;gap:10px}
+    .header-icon{font-size:1.7rem}
+    h1{font-family:'Playfair Display',Georgia,serif;font-size:clamp(1.7rem,5vw,2.6rem);font-weight:700;letter-spacing:.04em;color:var(--text-primary);text-align:center}
+    [data-theme="dark"] h1{background:linear-gradient(135deg,#82b1ff,#ce93d8,#69f0ae);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .header-sub{font-size:.78rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--text-secondary);text-align:center}
+
+    /* ============================================================
+       TAB NAV
+       ============================================================ */
+    .tab-nav{display:flex;align-items:stretch;border-top:1px solid var(--glass-border);margin:0 -26px}
+    .tab-btn{flex:1;padding:13px 8px;background:transparent;border:none;cursor:pointer;font-family:'Nunito',sans-serif;font-size:.85rem;font-weight:700;letter-spacing:.04em;color:var(--text-secondary);transition:color .25s;position:relative}
+    .tab-btn::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%) scaleX(0);width:60%;height:3px;border-radius:3px 3px 0 0;background:var(--tab-line);transition:transform .25s}
+    .tab-btn.active{color:var(--text-primary)}
+    .tab-btn.active::after{transform:translateX(-50%) scaleX(1)}
+    .darkmode-toggle{padding:13px 16px;background:transparent;border:none;cursor:pointer;font-size:.95rem;display:flex;align-items:center;justify-content:center;transition:transform .2s}
+    .darkmode-toggle:hover{transform:scale(1.18) rotate(15deg)}
+
+    /* ============================================================
+       TAB INHALTE
+       ============================================================ */
+    .tab-content{display:none;animation:fade-in .3s ease}
+    .tab-content.active{display:block}
+    @keyframes fade-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+    /* ============================================================
+       HEUTE-KARTE
+       ============================================================ */
+    .today-card{display:flex;align-items:center;padding:18px 24px;margin-bottom:14px;gap:12px}
+    .today-col{display:flex;flex-direction:column;gap:4px;flex:1}
+    .today-col-right{align-items:flex-end;text-align:right}
+    .today-label{font-size:.60rem;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:var(--text-light)}
+    .today-date{font-size:clamp(.82rem,1.8vw,1.00rem);font-weight:700;color:var(--text-primary);line-height:1.4}
+    .season-text-spring{color:var(--spring-deep)}
+    .season-text-summer{color:var(--summer-deep)}
+    .season-text-autumn{color:var(--autumn-deep)}
+    .season-text-winter{color:var(--winter-deep)}
+
+    /* ============================================================
+       JAHRESSTEUERUNG
+       ============================================================ */
+    .year-controls{display:flex;align-items:center;justify-content:center;padding:13px 20px;margin-bottom:18px;position:relative;overflow:visible}
+    .year-nav-center{display:flex;align-items:center;gap:10px}.year-display{display:flex;align-items:center;min-width:90px;justify-content:center}
+    #year-label{font-family:'Playfair Display',serif;font-size:1.9rem;font-weight:700;color:var(--text-primary)}
+
+    /* Zurück-zum-aktuellen-Jahr Buttons */
+    .goto-today-btn{font-size:.76rem;font-weight:800;padding:6px 12px;letter-spacing:.04em;color:var(--text-secondary);border-color:var(--glass-border);white-space:nowrap;display:none;position:absolute}
+    .goto-today-btn#btn-goto-today-prev{right:calc(50% + 100px)}
+    .goto-today-btn#btn-goto-today-next{left:calc(50% + 100px)}
+    .goto-today-btn:hover{color:var(--text-primary)}
+
+    /* ============================================================
+       JAHRESGITTER – 3 Spalten
+       ============================================================ */
+    .year-grid{display:flex;flex-direction:column;gap:10px}
+    .year-months-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+
+    /* ============================================================
+       MONATSKARTEN
+       ============================================================ */
+    .year-month-card{padding:16px 12px 18px}
+    .year-month-card.month-spring{border-color:var(--spring-border)}
+    .year-month-card.month-summer{border-color:var(--summer-border)}
+    .year-month-card.month-autumn{border-color:var(--autumn-border)}
+    .year-month-card.month-winter{border-color:var(--winter-border)}
+
+    /* Luminis: Gradient-Rahmen via box-shadow */
+    .year-month-card.month-luminis{border-color:var(--summer-border)}
+
+    /* Unara/Intera: lila Umrandung */
+    .year-month-card.month-special{border-color:rgba(140,90,210,.38)}
+    [data-theme="dark"] .year-month-card.month-special{border-color:rgba(170,120,255,.32)}
+
+    /* Monatsheader */
+    .year-month-header{display:grid;grid-template-columns:repeat(7,1fr);align-items:center;margin-bottom:7px;gap:0}
+    .year-month-emoji{font-size:.82rem;line-height:1.2;grid-column:1;grid-row:1;text-align:center;white-space:nowrap;position:relative;z-index:1;padding-left:.2rem}
+    .year-month-name{font-size:.90rem;font-weight:800;color:var(--text-primary);text-align:center;line-height:1.2;grid-column:1/8;grid-row:1;position:relative;z-index:0;pointer-events:none;align-self:center}
+    .year-month-sub{font-size:.60rem;font-weight:600;color:var(--text-secondary);text-align:right;line-height:1.2;grid-column:7;grid-row:1;justify-self:end;align-self:center;position:relative;z-index:1;padding-right:.7rem}
+
+    /* Wochentag-Header */
+    .year-cal-header{display:grid;grid-template-columns:repeat(7,1fr);margin-bottom:2px}
+    .year-cal-header span{text-align:center;font-size:.56rem;font-weight:800;color:var(--text-light);padding:2px 0}
+
+    /* Tagezellen */
+    .year-cal-days{display:grid;grid-template-columns:repeat(7,1fr);gap:1px}
+    .year-day{text-align:center;font-size:.70rem;font-weight:600;padding:6px 1px;border-radius:6px;cursor:pointer;color:var(--text-secondary);transition:background .12s,color .12s,transform .12s;user-select:none;-webkit-user-select:none}
+    .year-day:hover:not(.disabled-day){background:var(--glass-bg-strong);color:var(--text-primary);transform:scale(1.14)}
+
+    /* Heutiger Tag */
+    .month-spring .year-day.today{background:var(--spring-accent);color:#fff;font-weight:900}
+    .month-summer .year-day.today{background:var(--summer-accent);color:#fff;font-weight:900}
+    .month-autumn .year-day.today{background:var(--autumn-accent);color:#fff;font-weight:900}
+    .month-winter .year-day.today{background:var(--winter-accent);color:#fff;font-weight:900}
+    .month-luminis .year-day.today{background:var(--summer-accent);color:#fff;font-weight:900}
+    [data-theme="dark"] .month-spring .year-day.today{color:#071a09}
+    [data-theme="dark"] .month-summer .year-day.today{color:#1a0f00}
+    [data-theme="dark"] .month-autumn .year-day.today{color:#1a0600}
+    [data-theme="dark"] .month-winter .year-day.today{color:#060d20}
+    [data-theme="dark"] .month-luminis .year-day.today{color:#1a0f00}
+
+    /* ============================================================
+       SONDERKARTEN (Unara / Intera)
+       ============================================================ */
+    .year-special-card{padding:16px 12px;display:flex;flex-direction:column;gap:0;align-items:center;text-align:center}
+    .special-row{display:flex;align-items:center;justify-content:center}
+    .special-row-title{font-family:'Nunito',sans-serif;font-size:.90rem;font-weight:800;color:var(--text-primary);line-height:1.2;letter-spacing:.01em;margin-bottom:2px}
+    .special-row-title.special-today{color:rgba(110,60,200,.9)}
+    [data-theme="dark"] .special-row-title.special-today{color:rgba(180,130,255,.95)}
+    .special-row-sub{font-size:.62rem;font-weight:700;letter-spacing:.10em;text-transform:uppercase;color:var(--text-light);margin-bottom:0}
+    
+    .special-row-date{font-size:.78rem;font-weight:600;color:var(--text-secondary);line-height:1.5;margin:16px 0}
+    .special-row-next{color:var(--text-light);font-style:normal;font-size:.78rem}
+    .special-disabled{opacity:var(--disabled-opacity)}
+    .disabled-day{cursor:default;opacity:var(--disabled-opacity)}
+    
+    .special-divider{height:1px;background:var(--glass-border);width:calc(100% - 24px);margin:0;flex-shrink:0}
+
+    /* ============================================================
+       POPUP
+       ============================================================ */
+    #popup-overlay{display:none}
+    #popup-card{display:none;position:absolute;z-index:9999;padding:12px 14px;min-width:200px;max-width:300px}
+    #popup-card.popup-open{display:block;animation:popup-in .20s cubic-bezier(.34,1.56,.64,1)}
+    @keyframes popup-in{from{opacity:0;transform:scale(.88) translateY(8px)}to{opacity:1;transform:scale(1) translateY(0)}}
+
+    .popup-season-start{font-size:.80rem;font-weight:800;padding:6px 10px;border-radius:var(--radius-sm);margin-bottom:5px;text-align:center;letter-spacing:.03em}
+    .season-start-spring{color:var(--spring-deep);background:var(--spring-glass);border:1px solid var(--spring-border)}
+    .season-start-summer{color:var(--summer-deep);background:var(--summer-glass);border:1px solid var(--summer-border)}
+    .season-start-autumn{color:var(--autumn-deep);background:var(--autumn-glass);border:1px solid var(--autumn-border)}
+    .season-start-winter{color:var(--winter-deep);background:var(--winter-glass);border:1px solid var(--winter-border)}
+    .popup-ewig{font-size:.89rem;font-weight:800;line-height:1.45;padding:8px 10px;border-radius:var(--radius-sm);margin-bottom:5px}
+    .popup-ewig.season-spring{background:var(--spring-glass);color:var(--spring-text);border:1px solid var(--spring-border)}
+    .popup-ewig.season-summer{background:var(--summer-glass);color:var(--summer-text);border:1px solid var(--summer-border)}
+    .popup-ewig.season-autumn{background:var(--autumn-glass);color:var(--autumn-text);border:1px solid var(--autumn-border)}
+    .popup-ewig.season-winter{background:var(--winter-glass);color:var(--winter-text);border:1px solid var(--winter-border)}
+    .popup-greg{font-size:.77rem;font-weight:600;color:var(--text-secondary);padding:6px 10px;background:var(--glass-bg);border-radius:var(--radius-sm)}
+
+    /* ============================================================
+       BUTTONS
+       ============================================================ */
+    .glass-btn{padding:10px 18px;background:var(--glass-bg-strong);backdrop-filter:blur(10px);border:1.5px solid var(--glass-border);border-radius:var(--radius-sm);font-family:'Nunito',sans-serif;font-size:.86rem;font-weight:800;color:var(--text-primary);cursor:pointer;transition:all .2s;letter-spacing:.04em}
+    .glass-btn:hover{filter:brightness(1.06);transform:translateY(-1px);box-shadow:0 4px 14px rgba(0,0,0,.09)}
+    .glass-btn:active{transform:translateY(0)}
+    .glass-btn.primary{background:var(--tab-line);border-color:transparent;color:white}
+    .glass-btn.primary:hover{filter:brightness(1.10);box-shadow:0 6px 18px rgba(102,126,234,.28)}
+    .glass-btn.icon-btn{padding:8px 14px;font-size:1.1rem;line-height:1}
+
+    /* ============================================================
+       KONVERTER
+       ============================================================ */
+    .converter-wrap{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
+    .converter-block{padding:22px;display:flex;flex-direction:column;gap:13px;justify-content:space-between}
+    .converter-title{font-size:.94rem;font-weight:800;letter-spacing:.04em;color:var(--text-primary)}
+    .input-group{display:flex;flex-direction:column;gap:4px}
+    .input-group label{font-size:.66rem;font-weight:800;letter-spacing:.15em;text-transform:uppercase;color:var(--text-secondary)}
+    .glass-input{width:100%;padding:9px 12px;background:var(--glass-bg);backdrop-filter:blur(8px);border:1.5px solid var(--glass-border);border-radius:var(--radius-sm);font-family:'Nunito',sans-serif;font-size:.90rem;font-weight:600;color:var(--text-primary);outline:none;transition:border-color .2s,box-shadow .2s;-webkit-appearance:none;appearance:none}
+    .glass-input:focus{border-color:rgba(102,126,234,.55);box-shadow:0 0 0 3px rgba(102,126,234,.10)}
+    [data-theme="dark"] .glass-input:focus{border-color:rgba(130,177,255,.55);box-shadow:0 0 0 3px rgba(130,177,255,.10)}
+    .glass-select{cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='2' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 11px center;padding-right:34px}
+    [data-theme="dark"] .glass-input option{background:#1a2035;color:rgba(255,255,255,.88)}
+    
+    .result-box{height:0;overflow:hidden;opacity:0;transition:height .4s,opacity .3s,padding .3s;border-radius:var(--radius-sm)}
+    .result-box.show{max-height:none;min-height:70px;height:auto;opacity:1;padding:10px 14px;background:var(--glass-bg);border:1.5px solid var(--glass-border);display:flex;flex-direction:column;justify-content:center;align-items:center;gap:4px}
+    .result-big{font-size:.96rem;font-weight:800;color:var(--text-primary);width:100%;text-align:center}
+    
+    /* Converter Banner: shrink wraps the text now */
+    .converter-season-start{font-size:.78rem;font-weight:800;padding:5px 12px;border-radius:var(--radius-sm);margin-bottom:0;text-align:center;width:max-content;max-width:100%}
+    .converter-season-start.season-start-spring{color:var(--spring-deep);background:var(--spring-glass);border:1px solid var(--spring-border)}
+    .converter-season-start.season-start-summer{color:var(--summer-deep);background:var(--summer-glass);border:1px solid var(--summer-border)}
+    .converter-season-start.season-start-autumn{color:var(--autumn-deep);background:var(--autumn-glass);border:1px solid var(--autumn-border)}
+    .converter-season-start.season-start-winter{color:var(--winter-deep);background:var(--winter-glass);border:1px solid var(--winter-border)}
+
+    /* ============================================================
+       RESPONSIVE
+       ============================================================ */
+    @media(max-width:768px){
+      .today-card{flex-direction:column;gap:6px;padding:16px}
+      .today-col,.today-col-right{align-items:center;text-align:center}
+      .converter-wrap{grid-template-columns:1fr}
+      .glass-header{padding:16px 16px 0}
+      .header-inner{align-items:center}
+      h1{text-align:center}
+      .header-sub{text-align:center}
+      .year-months-row{grid-template-columns:repeat(2,1fr)}
+      .goto-today-btn{font-size:.70rem;padding:5px 9px}
+      .goto-today-btn#btn-goto-today-prev{right:calc(50% + 100px)}
+      .goto-today-btn#btn-goto-today-next{left:calc(50% + 100px)}
+    }
+
+    @media(max-width:480px){
+      .year-months-row{grid-template-columns:1fr}
+      .tab-btn{font-size:.76rem;padding:11px 4px}
+      h1{text-align:center}
+    }
+
+    /* ── iOS Safe Area (Notch + Home Bar) ─────────────────────────────────────── */
+    @supports(padding-top: env(safe-area-inset-top)) {
+      html, body {
+        padding-top: env(safe-area-inset-top);
+        padding-left: env(safe-area-inset-left);
+        padding-right: env(safe-area-inset-right);
+        padding-bottom: env(safe-area-inset-bottom);
+      }
+      .app-container {
+        padding-top: max(20px, env(safe-area-inset-top));
+        padding-bottom: calc(80px + env(safe-area-inset-bottom));
+        padding-left: max(16px, env(safe-area-inset-left));
+        padding-right: max(16px, env(safe-area-inset-right));
+      }
+      .glass-header {
+        margin-top: 0;
+      }
+    }
+
+    /* Year dropdown: invisible native select over the year label */
+    .year-label-wrap{position:relative;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;min-width:90px}
+    .year-label-wrap select.year-select{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;font-size:1rem;border:none;background:transparent}
+    #year-label{cursor:pointer;user-select:none;border-bottom:1.5px dashed transparent;transition:border-color .2s}
+    #year-label:hover{border-bottom-color:var(--text-light)}
+
+    [data-theme="dark"] html{background-color:#0a0e1a}
+
+    /* ── iOS Full-Screen Background Fix ─────────────────────────────────────── */
+    :root {
+      background: #e8f4fd;
+      background-image: linear-gradient(135deg,#e8f4fd 0%,#f0e8fb 30%,#fde8f0 60%,#fdf5e8 100%);
+      background-attachment: fixed;
+    }
+    [data-theme="dark"]:root {
+      background: #0a0e1a;
+      background-image: linear-gradient(135deg,#0a0e1a 0%,#0d1a2e 25%,#0a1628 50%,#0f0d1e 75%,#0a1220 100%);
+      background-attachment: fixed;
+    }
+
+    html::before, html::after {
+      content: '';
+      position: fixed;
+      left: 0; right: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+    html::before {
+      top: 0;
+      height: max(env(safe-area-inset-top, 0px), 1px);
+      background: inherit;
+    }
+    html::after {
+      bottom: 0;
+      height: max(env(safe-area-inset-bottom, 0px), 1px);
+      background: inherit;
+    }
+
+    body::before, body::after {
+      content: '';
+      display: block;
+      position: fixed;
+      left: 0; right: 0;
+      z-index: -1;
+      pointer-events: none;
+    }
+    body::before {
+      top: -100px;
+      height: calc(100px + env(safe-area-inset-top, 0px));
+      background: #e8f4fd;
+    }
+    body::after {
+      bottom: -100px;
+      height: calc(100px + env(safe-area-inset-bottom, 0px));
+      background: #e8f4fd;
+    }
+    [data-theme="dark"] body::before,
+    [data-theme="dark"] body::after {
+      background: #0a0e1a;
+    }
+
+    /* Extra info general */
+    .extra-info {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px solid var(--glass-border);
+    }
+    .extra-info span {
+      font-size: .76rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-align: center;
+      line-height: 1.4;
+    }
+    /* In popup: left-aligned */
+    #popup-content .extra-info span {
+      text-align: left;
+    }
+    
+    /* In result-box (Konverter): larger text */
+    .result-box .extra-info span {
+      text-align: center;
+      font-size: .78rem;
+    }
+
+    /* Extra Info inside Unara/Intera Cards */
+    .year-special-card .extra-info {
+      margin-top: 16px;
+      padding-top: 0;
+      width: 100%;
+      border-top: none;
+    }
+    .year-special-card .extra-info span {
+      text-align: center;
+      font-size: .78rem;
+    }
+  </style>
 </head>
 <body>
   <div class="bg-orb orb-1"></div>
@@ -55,9 +447,7 @@
       </div>
 
       <div class="year-controls glass-card">
-        <!-- Zurück-Button links (absolut positioniert, erscheint wenn Jahr > heute) -->
         <button class="glass-btn goto-today-btn" id="btn-goto-today-prev" style="display:none">↩ 2026</button>
-        <!-- Immer zentriert: Pfeil links, Jahr, Pfeil rechts -->
         <div class="year-nav-center">
           <button class="glass-btn icon-btn" id="btn-year-prev">&#8249;</button>
           <div class="year-display">
@@ -68,7 +458,6 @@
           </div>
           <button class="glass-btn icon-btn" id="btn-year-next">&#8250;</button>
         </div>
-        <!-- Zurück-Button rechts (absolut positioniert, erscheint wenn Jahr < heute) -->
         <button class="glass-btn goto-today-btn" id="btn-goto-today-next" style="display:none">2026 ↩</button>
       </div>
 
@@ -152,12 +541,452 @@
 
   </div>
 
-  <!-- Popup: fixed, display:none by default -->
   <div id="popup-overlay" style="display:none"></div>
   <div class="glass-card" id="popup-card">
     <div id="popup-content"></div>
   </div>
 
-  <script src="calendar.js"></script>
+  <script>
+    // ============================================================
+    // EWIGER KALENDER
+    // ============================================================
+
+    const MONTHS = [
+      { num:1,  name:"Nivara",  sub:"Schneezeit",     season:"winter", emoji:"❄️" },
+      { num:2,  name:"Aurora",  sub:"Morgenröte",     season:"winter", emoji:"❄️" },
+      { num:3,  name:"Viridia", sub:"Grünwerden",     season:"spring", emoji:"🌸" },
+      { num:4,  name:"Floris",  sub:"Blütezeit",      season:"spring", emoji:"🌸" },
+      { num:5,  name:"Solara",  sub:"Sonnenaufbruch", season:"spring", emoji:"🌸" },
+      { num:6,  name:"Luminis", sub:"Lichtzeit",      season:"summer", emoji:"☀️" },
+      { num:7,  name:"Calora",  sub:"Wärmezeit",      season:"summer", emoji:"☀️" },
+      { num:8,  name:"Helia",   sub:"Sonnenhöhe",     season:"summer", emoji:"☀️" },
+      { num:9,  name:"Fructa",  sub:"Erntezeit",      season:"summer", emoji:"☀️" },
+      { num:10, name:"Aurelia", sub:"Goldzeit",       season:"autumn", emoji:"🍂" },
+      { num:11, name:"Ventis",  sub:"Windzeit",       season:"autumn", emoji:"🍂" },
+      { num:12, name:"Umbra",   sub:"Schattenzeit",   season:"autumn", emoji:"🍂" },
+      { num:13, name:"Noctis",  sub:"Dunkelzeit",     season:"winter", emoji:"❄️" },
+    ];
+
+    const SEASON_STARTS = [
+      { month:3,  day:8,  label:"🌸 Frühlingsanfang 🌸", cls:"season-start-spring" },
+      { month:6,  day:15, label:"☀️ Sommeranfang ☀️",    cls:"season-start-summer" },
+      { month:9,  day:22, label:"🍂 Herbstanfang 🍂",     cls:"season-start-autumn" },
+      { month:13, day:1,  label:"❄️ Winteranfang ❄️",    cls:"season-start-winter" },
+    ];
+
+    const ZODIAC = [
+      ["Steinbock",  356, 384],
+      ["Wassermann",  20,  49],
+      ["Fische",      50,  79],
+      ["Widder",      80, 109],
+      ["Stier",      110, 140],
+      ["Zwillinge",  141, 171],
+      ["Krebs",      172, 203],
+      ["Löwe",       204, 234],
+      ["Jungfrau",   235, 265],
+      ["Waage",      266, 295],
+      ["Skorpion",   296, 325],
+      ["Schütze",    326, 355],
+    ];
+
+    const SOUL = [
+      ["Waldfee",     "Erde",      80, 106],
+      ["Elfe",        "Magie",    107, 137],
+      ["Meerjungfrau","Wasser",   138, 166],
+      ["Einhorn",     "Licht",    167, 192],
+      ["Feuergeist",  "Feuer",    193, 222],
+      ["Sphinx",      "Gestein",  223, 254],
+      ["Kobold",      "Erde",     255, 281],
+      ["Werwolf",     "Schatten", 282, 304],
+      ["Hexe",        "Magie",    305, 330],
+      ["Vampir",      "Schatten", 331, 359],
+      ["Riese",       "Gestein",  360, 387],
+      ["Eisdrache",   "Wasser",    23,  49],
+      ["Phönix",      "Feuer",     50,  79],
+    ];
+
+    function getZodiac(doy) {
+      if (doy >= 366) doy = 365;
+      for (const [name, s, e] of ZODIAC) {
+        if (e > 365) {
+          if (doy >= s || doy <= (e - 365)) return name;
+        } else {
+          if (doy >= s && doy <= e) return name;
+        }
+      }
+      return "";
+    }
+
+    function getSoul(doy) {
+      if (doy >= 366) doy = 365;
+      for (const [name, elem, s, e] of SOUL) {
+        if (e > 365) {
+          if (doy >= s || doy <= (e - 365)) return [name, elem];
+        } else {
+          if (doy >= s && doy <= e) return [name, elem];
+        }
+      }
+      return ["", ""];
+    }
+
+    function buildExtraInfo(date, ewig) {
+      const doy = (ewig.isUnara || ewig.isIntera)
+        ? (ewig.isIntera ? 366 : 365)
+        : dayOfYear(date);
+      const zodiac       = getZodiac(doy);
+      const [soul, elem] = getSoul(doy);
+      if (!zodiac && !soul) return "";
+      return (
+        '<div class="extra-info">' +
+        (zodiac ? '<span>Sternzeichen: ' + zodiac + '</span>' : '') +
+        (soul   ? '<span>Seelenwächter: ' + soul  + '</span>' : '') +
+        (elem   ? '<span>Element: '       + elem  + '</span>' : '') +
+        '</div>'
+      );
+    }
+
+    const WEEKDAY_NAMES  = ["Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samstag","Sonntag"];
+    const WEEKDAYS_SHORT = ["Mo","Di","Mi","Do","Fr","Sa","So"];
+
+    function isLeapYear(y) { return (y%4===0&&y%100!==0)||(y%400===0); }
+
+    function dayOfYear(date) {
+      return Math.round((Date.UTC(date.getFullYear(),date.getMonth(),date.getDate())-Date.UTC(date.getFullYear(),0,1))/86400000)+1;
+    }
+
+    function calendarSeason(doy) {
+      if (doy < 64)  return "winter";
+      if (doy < 155) return "spring";
+      if (doy < 246) return "summer";
+      if (doy < 337) return "autumn";
+      return "winter";
+    }
+
+    function toLocalDateStr(date) {
+      return date.getFullYear()+"-"+String(date.getMonth()+1).padStart(2,"0")+"-"+String(date.getDate()).padStart(2,"0");
+    }
+
+    function fromLocalDateStr(str) {
+      const [y,m,d] = str.split("-").map(Number);
+      return new Date(y,m-1,d);
+    }
+
+    function gregToEwig(date) {
+      const year = date.getFullYear();
+      const doy  = dayOfYear(date);
+      const leap = isLeapYear(year);
+      if (doy===365) return {year,month:0,day:1,monthName:"Unara",monthSub:"Zeitloser Tag",season:"winter",emoji:"✨",weekday:null,popupSeason:"winter",isUnara:true,isIntera:false};
+      if (leap&&doy===366) return {year,month:0,day:2,monthName:"Intera",monthSub:"Zeitloser Tag",season:"winter",emoji:"🌟",weekday:null,popupSeason:"winter",isUnara:false,isIntera:true};
+      const mi = Math.floor((doy-1)/28);
+      const day = ((doy-1)%28)+1;
+      const m = MONTHS[mi];
+      return {year,month:m.num,day,monthName:m.name,monthSub:m.sub,season:m.season,emoji:m.emoji,weekday:(day-1)%7,popupSeason:calendarSeason(doy),isUnara:false,isIntera:false};
+    }
+
+    function ewigToGreg(year,month,day) {
+      const doy = month===0?(day===2?366:365):(month-1)*28+day;
+      return new Date(year,0,doy);
+    }
+
+    function formatGreg(date) {
+      return date.toLocaleDateString("de-DE",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
+    }
+
+    function formatEwigReadable(ewig) {
+      if (ewig.isUnara)  return "Unara "+ewig.year;
+      if (ewig.isIntera) return "Intera "+ewig.year;
+      return WEEKDAY_NAMES[ewig.weekday]+", "+ewig.day+". "+ewig.monthName+" "+ewig.year;
+    }
+
+    function renderToday() {
+      const today = new Date();
+      today.setHours(0,0,0,0);
+      const ewig = gregToEwig(today);
+      document.getElementById("greg-today").textContent = formatGreg(today);
+      const ewigEl = document.getElementById("ewig-today");
+      ewigEl.textContent = formatEwigReadable(ewig);
+      ewigEl.className = "today-date ewig-date season-text-"+ewig.season;
+    }
+
+    const TODAY_YEAR = new Date().getFullYear();
+    let currentYear = TODAY_YEAR;
+
+    function renderYearGrid(year) {
+      document.getElementById("year-label").textContent = year;
+
+      const sel = document.getElementById("year-select");
+      if (sel) {
+        sel.innerHTML = "";
+        const minY = Math.min(year, TODAY_YEAR) - 200;
+        const maxY = Math.max(year, TODAY_YEAR) + 200;
+        for (let y = minY; y <= maxY; y++) {
+          const opt = document.createElement("option");
+          opt.value = y; opt.textContent = y;
+          if (y === year) opt.selected = true;
+          sel.appendChild(opt);
+        }
+        sel.onchange = (e) => { currentYear = parseInt(e.target.value); renderYearGrid(currentYear); };
+      }
+
+      const prevBtn = document.getElementById("btn-goto-today-prev");
+      const nextBtn = document.getElementById("btn-goto-today-next");
+      if (prevBtn) { prevBtn.textContent = String(TODAY_YEAR); prevBtn.style.display = year > TODAY_YEAR ? "inline-flex" : "none"; }
+      if (nextBtn) { nextBtn.textContent = String(TODAY_YEAR); nextBtn.style.display = year < TODAY_YEAR ? "inline-flex" : "none"; }
+
+      const leap = isLeapYear(year);
+      const todayStr = toLocalDateStr(new Date());
+      const grid = document.getElementById("year-grid");
+      grid.innerHTML = "";
+
+      const frag = document.createDocumentFragment();
+
+      for (let row=0; row<4; row++) {
+        const rowEl = document.createElement("div");
+        rowEl.className = "year-months-row";
+        for (let col=0; col<3; col++) {
+          rowEl.appendChild(buildMonthCard(year, row*3+col+1, todayStr));
+        }
+        frag.appendChild(rowEl);
+      }
+
+      const lastRow = document.createElement("div");
+      lastRow.className = "year-months-row";
+      lastRow.appendChild(buildMonthCard(year, 13, todayStr));
+      lastRow.appendChild(buildUnaraCard(year, todayStr));
+      lastRow.appendChild(buildInteraCard(year, leap, todayStr));
+      frag.appendChild(lastRow);
+
+      grid.appendChild(frag);
+
+      grid.querySelectorAll(".year-day[data-greg]").forEach(el => {
+        el.addEventListener("click", (e) => {
+          e.stopPropagation();
+          showPopup(el.dataset.greg, e);
+        });
+      });
+    }
+
+    function buildMonthCard(year, mNum, todayStr) {
+      const mData = MONTHS[mNum-1];
+      const card  = document.createElement("div");
+      const isLuminis = mNum===6;
+      card.className = "year-month-card glass-card "+(isLuminis?"month-luminis":"month-"+mData.season);
+
+      const displayEmoji = isLuminis ? "🌸/☀️" : mData.emoji;
+
+      const days = [];
+      for (let d=1; d<=28; d++) {
+        const gregDate = ewigToGreg(year, mNum, d);
+        const gregStr  = toLocalDateStr(gregDate);
+        const cls = "year-day"+(gregStr===todayStr?" today":"");
+        days.push('<span class="'+cls+'" data-greg="'+gregStr+'">'+d+'</span>');
+      }
+
+      card.innerHTML =
+        '<div class="year-month-header">'+
+          '<span class="year-month-emoji">'+displayEmoji+'</span>'+
+          '<span class="year-month-name">'+mData.name+'</span>'+
+          '<span class="year-month-sub">'+mData.sub+'</span>'+
+        '</div>'+
+        '<div class="year-cal-header">'+WEEKDAYS_SHORT.map(d=>'<span>'+d+'</span>').join("")+'</div>'+
+        '<div class="year-cal-days">'+days.join("")+'</div>';
+      return card;
+    }
+
+    function buildUnaraCard(year, todayStr) {
+      const card = document.createElement("div");
+      card.className = "year-month-card year-special-card glass-card month-special";
+      const unaraDate = ewigToGreg(year,0,1);
+      const isToday = toLocalDateStr(unaraDate)===todayStr;
+      
+      card.innerHTML =
+        '<div class="special-row special-row-title'+(isToday?" special-today":"")+'">Unara '+year+'</div>'+
+        '<div class="special-row special-row-sub">Zeitloser Tag</div>'+
+        '<div class="special-row special-row-date">'+formatGreg(unaraDate)+'</div>'+
+        '<div class="special-divider"></div>'+
+        buildExtraInfo(unaraDate,{isUnara:true,isIntera:false,year:year,month:0,day:1,season:'winter'});
+      return card;
+    }
+
+    function buildInteraCard(year, leap, todayStr) {
+      const card = document.createElement("div");
+      card.className = "year-month-card year-special-card glass-card month-special"+(leap?"":" special-disabled");
+      
+      if (leap) {
+        const interaDate = ewigToGreg(year,0,2);
+        const isToday = toLocalDateStr(interaDate)===todayStr;
+        const interaEwig = {isUnara:false, isIntera:true, year:year, month:0, day:2, season:'winter'};
+        
+        card.innerHTML =
+          '<div class="special-row special-row-title'+(isToday?" special-today":"")+'">Intera '+year+'</div>'+
+          '<div class="special-row special-row-sub">Zeitloser Tag</div>'+
+          '<div class="special-row special-row-date">'+formatGreg(interaDate)+'</div>'+
+          '<div class="special-divider"></div>'+
+          buildExtraInfo(interaDate, interaEwig);
+      } else {
+        let y=year+1; while(!isLeapYear(y)) y++;
+        
+        card.innerHTML =
+          '<div class="special-row special-row-title">Intera</div>'+
+          '<div class="special-row special-row-sub">Zeitloser Tag</div>'+
+          '<div class="special-row special-row-date special-row-next">Nächstes Schaltjahr: '+y+'</div>'+
+          '<div class="special-divider"></div>'+
+          '<div class="extra-info"><span>Sternzeichen: –</span><span>Seelenwächter: –</span><span>Element: –</span></div>';
+      }
+      return card;
+    }
+
+    function showPopup(gregDateStr, event) {
+      const date  = fromLocalDateStr(gregDateStr);
+      const ewig  = gregToEwig(date);
+      const card  = document.getElementById("popup-card");
+      const content = document.getElementById("popup-content");
+      const ps = ewig.isUnara||ewig.isIntera ? "winter" : ewig.popupSeason;
+
+      let ssHtml = "";
+      if (!ewig.isUnara&&!ewig.isIntera) {
+        const ss = SEASON_STARTS.find(s=>s.month===ewig.month&&s.day===ewig.day);
+        if (ss) ssHtml = '<div class="popup-season-start '+ss.cls+'">'+ss.label+'</div>';
+      }
+
+      const extraHtml = buildExtraInfo(date, ewig);
+      content.innerHTML =
+        ssHtml+
+        '<div class="popup-ewig season-'+ps+'">'+formatEwigReadable(ewig)+'</div>'+
+        '<div class="popup-greg">'+formatGreg(date)+'</div>'+
+        extraHtml;
+
+      card.style.visibility = "hidden";
+      card.style.display    = "block";
+
+      requestAnimationFrame(() => {
+        const cw=card.offsetWidth, ch=card.offsetHeight, mg=10;
+        const vw=window.innerWidth, vh=window.innerHeight;
+        const sx=window.scrollX||window.pageXOffset;
+        const sy=window.scrollY||window.pageYOffset;
+        let x=event.clientX, y=event.clientY+14;
+        if (x+cw+mg>vw) x=event.clientX-cw-mg;
+        if (x<mg) x=mg;
+        if (y+ch+mg>vh) y=event.clientY-ch-8;
+        if (y<mg) y=mg;
+        card.style.left = (x+sx)+"px";
+        card.style.top  = (y+sy)+"px";
+        card.style.visibility = "visible";
+        card.classList.add("popup-open");
+      });
+    }
+
+    function hidePopup() {
+      const card = document.getElementById("popup-card");
+      card.classList.remove("popup-open");
+      card.style.display = "none";
+    }
+
+    function setupDarkMode() {
+      const btn  = document.getElementById("darkmode-toggle");
+      const html = document.documentElement;
+      const icon = btn.querySelector(".toggle-icon");
+      const saved = localStorage.getItem("ewiger-theme");
+      const initial = saved||(window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");
+      html.setAttribute("data-theme",initial);
+      icon.textContent = initial==="dark"?"☀️":"🌙";
+      btn.addEventListener("click",()=>{
+        const next = html.getAttribute("data-theme")==="dark"?"light":"dark";
+        html.setAttribute("data-theme",next);
+        localStorage.setItem("ewiger-theme",next);
+        icon.textContent = next==="dark"?"☀️":"🌙";
+      });
+    }
+
+    function setupConverter() {
+      const today = new Date();
+      document.getElementById("greg-day-in").value   = today.getDate();
+      document.getElementById("greg-month-in").value = today.getMonth()+1;
+      document.getElementById("greg-year-in").value  = today.getFullYear();
+      
+      const todayEwig = gregToEwig(today);
+      document.getElementById("ewig-day").value   = todayEwig.isUnara||todayEwig.isIntera ? todayEwig.day : todayEwig.day;
+      document.getElementById("ewig-month").value = todayEwig.month;
+      document.getElementById("ewig-year").value  = todayEwig.year;
+
+      document.getElementById("btn-greg-to-ewig").addEventListener("click",()=>{
+        const day  = parseInt(document.getElementById("greg-day-in").value);
+        const mon  = parseInt(document.getElementById("greg-month-in").value);
+        const year = parseInt(document.getElementById("greg-year-in").value);
+        if (!day||!mon||!year) return;
+        const date = new Date(year,mon-1,day);
+        const ewig = gregToEwig(date);
+        
+        let ssHtml = "";
+        if (!ewig.isUnara&&!ewig.isIntera) {
+          const ss = SEASON_STARTS.find(s=>s.month===ewig.month&&s.day===ewig.day);
+          if (ss) ssHtml = '<div class="converter-season-start '+ss.cls+'">'+ss.label+'</div>';
+        }
+        const el = document.getElementById("result-greg-to-ewig");
+        el.innerHTML = ssHtml+'<div class="result-big">'+formatEwigReadable(ewig)+'</div>'+buildExtraInfo(date,ewig);
+        el.classList.add("show");
+      });
+
+      document.getElementById("btn-ewig-to-greg").addEventListener("click",()=>{
+        const day  = parseInt(document.getElementById("ewig-day").value)||1;
+        const mon  = parseInt(document.getElementById("ewig-month").value);
+        const year = parseInt(document.getElementById("ewig-year").value);
+        if (!year||isNaN(mon)) return;
+        const d = mon!==0?Math.max(1,Math.min(28,day)):day;
+        const gregDate = ewigToGreg(year,mon,d);
+        
+        let ssHtml2 = "";
+        if (mon!==0) {
+          const ss2 = SEASON_STARTS.find(s=>s.month===mon&&s.day===d);
+          if (ss2) ssHtml2 = '<div class="converter-season-start '+ss2.cls+'">'+ss2.label+'</div>';
+        }
+        const el = document.getElementById("result-ewig-to-greg");
+        const ewigInfo = gregToEwig(gregDate);
+        el.innerHTML = ssHtml2+'<div class="result-big">'+formatGreg(gregDate)+'</div>'+buildExtraInfo(gregDate,ewigInfo);
+        el.classList.add("show");
+      });
+
+      document.getElementById("ewig-month").addEventListener("change",(e)=>{
+        const isSpecial = e.target.value==="0";
+        const dayEl = document.getElementById("ewig-day");
+        dayEl.placeholder = isSpecial?"1=Unara, 2=Intera":"1–28";
+        dayEl.max = isSpecial?"2":"28";
+      });
+    }
+
+    function setupTabs() {
+      document.querySelectorAll(".tab-btn").forEach(btn=>{
+        btn.addEventListener("click",()=>{
+          document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));
+          document.querySelectorAll(".tab-content").forEach(c=>c.classList.remove("active"));
+          btn.classList.add("active");
+          document.getElementById("tab-"+btn.dataset.tab).classList.add("active");
+        });
+      });
+    }
+
+    function setupYearNav() {
+      document.getElementById("btn-year-prev").addEventListener("click",()=>{ currentYear--; renderYearGrid(currentYear); });
+      document.getElementById("btn-year-next").addEventListener("click",()=>{ currentYear++; renderYearGrid(currentYear); });
+      document.getElementById("btn-goto-today-prev").addEventListener("click",()=>{ currentYear=TODAY_YEAR; renderYearGrid(currentYear); });
+      document.getElementById("btn-goto-today-next").addEventListener("click",()=>{ currentYear=TODAY_YEAR; renderYearGrid(currentYear); });
+    }
+
+    document.addEventListener("DOMContentLoaded",()=>{
+      setupDarkMode();
+      renderToday();
+      setupConverter();
+      setupTabs();
+      setupYearNav();
+      renderYearGrid(currentYear);
+
+      document.addEventListener("click",(e)=>{
+        const card = document.getElementById("popup-card");
+        if (!card.classList.contains("popup-open")) return;
+        if (!card.contains(e.target)) hidePopup();
+      });
+      document.addEventListener("keydown",(e)=>{ if(e.key==="Escape") hidePopup(); });
+    });
+  </script>
 </body>
 </html>
