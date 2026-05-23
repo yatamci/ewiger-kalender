@@ -379,8 +379,34 @@ body::after {
   text-align: left;
 }
 /* In result-box: centered (inherits from parent) */
-.result-box .extra-info span {
-  text-align: center;
+.result-box{
+  height:0;
+  overflow:hidden;
+  opacity:0;
+  transition:height .4s,opacity .3s,padding .3s;
+  border-radius:var(--radius-sm);
+  border: 1px solid var(--text-light); 
+}
+
+.result-box.show{
+  max-height:none;
+  min-height:70px;
+  height:auto;
+  opacity:1;
+  padding:10px 14px;
+  background:var(--glass-bg);
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  gap:4px;
+}
+
+.result-box hr {
+  width: 80%;
+  border: 0;
+  border-top: 1px solid var(--text-light);
+  margin: 5px 0;
 }
 
 .year-special-card .extra-info {
