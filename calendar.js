@@ -26,6 +26,85 @@ const SEASON_STARTS = [
   { month:13, day:1,  label:"❄️ Winteranfang ❄️",    cls:"season-start-winter" },
 ];
 
+// ============================================================
+// STERNZEICHEN + SEELENWÄCHTER + ELEMENT
+// doy-Ranges basierend auf gregorianischen Daten (2026, kein Schaltjahr)
+// Schaltjahre: Steinbock + Riese decken Intera (doy 366) automatisch ab
+// ============================================================
+
+const ZODIAC = [
+  ["Steinbock",  356, 384], // 22.Dez – 19.Jan (wraps)
+  ["Wassermann",  20,  49], // 20.Jan – 18.Feb
+  ["Fische",      50,  79], // 19.Feb – 20.Mär
+  ["Widder",      80, 109], // 21.Mär – 19.Apr
+  ["Stier",      110, 140], // 20.Apr – 20.Mai
+  ["Zwillinge",  141, 171], // 21.Mai – 20.Jun
+  ["Krebs",      172, 203], // 21.Jun – 22.Jul
+  ["Löwe",       204, 234], // 23.Jul – 22.Aug
+  ["Jungfrau",   235, 265], // 23.Aug – 22.Sep
+  ["Waage",      266, 295], // 23.Sep – 22.Okt
+  ["Skorpion",   296, 325], // 23.Okt – 21.Nov
+  ["Schütze",    326, 355], // 22.Nov – 21.Dez
+];
+
+const SOUL = [
+  ["Waldfee",     "Erde",      80, 106],
+  ["Elfe",        "Magie",    107, 137],
+  ["Meerjungfrau","Wasser",   138, 166],
+  ["Einhorn",     "Licht",    167, 192],
+  ["Feuergeist",  "Feuer",    193, 222],
+  ["Sphinx",      "Gestein",  223, 254],
+  ["Kobold",      "Erde",     255, 281],
+  ["Werwolf",     "Schatten", 282, 304],
+  ["Hexe",        "Magie",    305, 330],
+  ["Vampir",      "Schatten", 331, 359],
+  ["Riese",       "Gestein",  360, 387], // wraps: 360-365 + 1-22
+  ["Eisdrache",   "Wasser",    23,  49],
+  ["Phönix",      "Feuer",     50,  79],
+];
+
+function getZodiac(doy) {
+  // Schaltjahr: doy 366 (Intera) -> treat as Steinbock (same as 365/Unara)
+  if (doy >= 366) doy = 365;
+  for (const [name, s, e] of ZODIAC) {
+    if (e > 365) {
+      if (doy >= s || doy <= (e - 365)) return name;
+    } else {
+      if (doy >= s && doy <= e) return name;
+    }
+  }
+  return "";
+}
+
+function getSoul(doy) {
+  // Schaltjahr: doy 366 -> treat as Riese (same as Unara)
+  if (doy >= 366) doy = 365;
+  for (const [name, elem, s, e] of SOUL) {
+    if (e > 365) {
+      if (doy >= s || doy <= (e - 365)) return [name, elem];
+    } else {
+      if (doy >= s && doy <= e) return [name, elem];
+    }
+  }
+  return ["", ""];
+}
+
+function buildExtraInfo(date, ewig) {
+  const doy = (ewig.isUnara || ewig.isIntera)
+    ? (ewig.isIntera ? 366 : 365)
+    : dayOfYear(date);
+  const zodiac       = getZodiac(doy);
+  const [soul, elem] = getSoul(doy);
+  if (!zodiac && !soul) return "";
+  return (
+    '<div class="extra-info">' +
+    (zodiac ? '<span>Sternzeichen: ' + zodiac + '</span>' : '') +
+    (soul   ? '<span>Seelenwächter: ' + soul  + '</span>' : '') +
+    (elem   ? '<span>Element: '       + elem  + '</span>' : '') +
+    '</div>'
+  );
+}
+
 const WEEKDAY_NAMES  = ["Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samstag","Sonntag"];
 const WEEKDAYS_SHORT = ["Mo","Di","Mi","Do","Fr","Sa","So"];
 
@@ -215,7 +294,8 @@ function buildUnaraCard(year, todayStr) {
   card.innerHTML =
     '<div class="special-row special-row-title'+(isToday?" special-today":"")+'">Unara '+year+'</div>'+
     '<div class="special-row special-row-sub">Zeitloser Tag</div>'+
-    '<div class="special-row special-row-date">'+formatGreg(unaraDate)+'</div>';
+    '<div class="special-row special-row-date">'+formatGreg(unaraDate)+'</div>'+
+    buildExtraInfo(unaraDate,{isUnara:true,isIntera:false,year:year,month:0,day:1,season:'winter'});
   return card;
 }
 
@@ -225,10 +305,12 @@ function buildInteraCard(year, leap, todayStr) {
   if (leap) {
     const interaDate = ewigToGreg(year,0,2);
     const isToday = toLocalDateStr(interaDate)===todayStr;
+    const interaEwig = {isUnara:false, isIntera:true, year:year, month:0, day:2, season:'winter'};
     card.innerHTML =
       '<div class="special-row special-row-title'+(isToday?" special-today":"")+'">Intera '+year+'</div>'+
       '<div class="special-row special-row-sub">Zeitloser Tag</div>'+
-      '<div class="special-row special-row-date">'+formatGreg(interaDate)+'</div>';
+      '<div class="special-row special-row-date">'+formatGreg(interaDate)+'</div>'+
+      buildExtraInfo(interaDate, interaEwig);
   } else {
     let y=year+1; while(!isLeapYear(y)) y++;
     card.innerHTML =
