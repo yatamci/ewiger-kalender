@@ -375,10 +375,6 @@ body::after {
   text-align: center;
   line-height: 1.4;
 }
-/* In popup: center-aligned */
-#popup-content .extra-info span {
-  text-align: center;
-}
 /* In result-box: centered (inherits from parent) */
 .result-box{
   height:0;
