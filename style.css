@@ -359,10 +359,9 @@ body::after {
 }
 
 /* ============================================================
-   ZENTRIERUNG FIX FÜR POPUP UND KONVERTER
+   ZENTRIERUNG FIX FÜR POPUP
    ============================================================ */
 
-/* 1. Popup-Inhalt zentrieren */
 #popup-card {
   display: none;
   position: absolute;
@@ -370,27 +369,22 @@ body::after {
   padding: 16px;
   min-width: 220px;
   max-width: 320px;
+  /* Zentrierung erzwingen */
   text-align: center;
-  /* Wichtig für die Zentrierung des Inhalts */
-  display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
 }
 
 #popup-card.popup-open {
-  display: flex; /* Flex statt block für bessere Zentrierung */
+  display: flex !important; /* !important erzwingt die Sichtbarkeit */
 }
 
-/* 2. Datum und Extra-Info zentrieren */
-.popup-ewig, 
-.popup-greg {
-  text-align: center;
-  display: block;
-  width: 100%;
+/* Alle Texte im Popup zentrieren */
+#popup-card, 
+#popup-card * {
+  text-align: center !important;
 }
 
-/* 3. Extra-Info Container sauber zentrieren */
 .extra-info {
   display: flex;
   flex-direction: column;
@@ -398,26 +392,11 @@ body::after {
   margin-top: 10px;
   padding-top: 10px;
   border-top: 1px solid var(--glass-border);
-  align-items: center; 
   width: 100%;
+  align-items: center;
 }
 
 .extra-info span {
-  text-align: center;
   display: block;
   width: 100%;
-}
-
-/* 4. Sicherstellen, dass kein 'text-align: left' das überschreibt */
-#popup-content .extra-info span {
-  text-align: center !important;
-}
-
-/* 5. Result-Box Design */
-.result-box {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
 }
