@@ -359,8 +359,6 @@ function showPopup(gregDateStr, event) {
     if (x<mg) x=mg;
     if (y+ch+mg>vh) y=event.clientY-ch-8;
     if (y<mg) y=mg;
-    card.style.left = (x+sx)+"px";
-    card.style.top  = (y+sy)+"px";
     card.style.visibility = "visible";
     card.classList.add("popup-open");
   });
