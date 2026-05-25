@@ -187,7 +187,12 @@ function renderToday() {
   document.getElementById("greg-today").textContent = formatGreg(today);
   const ewigEl = document.getElementById("ewig-today");
   ewigEl.textContent = formatEwigReadable(ewig);
-  ewigEl.className = "today-date ewig-date season-text-"+ewig.season;
+  
+  // Taggenaue Jahreszeit ermitteln
+  const exactSeason = (ewig.isUnara || ewig.isIntera) ? "winter" : ewig.popupSeason;
+  
+  // Die exakte Jahreszeit als Klasse setzen
+  ewigEl.className = "today-date ewig-date season-text-" + exactSeason;
 }
 
 // ============================================================
