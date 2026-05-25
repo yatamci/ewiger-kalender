@@ -271,7 +271,12 @@ function buildMonthCard(year, mNum, todayStr) {
   for (let d=1; d<=28; d++) {
     const gregDate = ewigToGreg(year, mNum, d);
     const gregStr  = toLocalDateStr(gregDate);
-    const cls = "year-day"+(gregStr===todayStr?" today":"");
+    let cls = "year-day";
+    if (gregStr===todayStr) {
+      const ewigDay = gregToEwig(gregDate);
+      const daySeason = ewigDay.popupSeason || ewigDay.season;
+      cls += " today today-season-"+daySeason;
+    }
     days.push('<span class="'+cls+'" data-greg="'+gregStr+'">'+d+'</span>');
   }
 
