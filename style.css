@@ -166,16 +166,15 @@ h1{font-family:'Playfair Display',Georgia,serif;font-size:clamp(1.7rem,5vw,2.6re
 .year-day:hover:not(.disabled-day){background:var(--glass-bg-strong);color:var(--text-primary);transform:scale(1.14)}
 
 /* Heutiger Tag – dunkle Schrift im Dark Mode für Lesbarkeit */
-.month-spring .year-day.today{background:var(--spring-accent);color:#fff;font-weight:900}
-.month-summer .year-day.today{background:var(--summer-accent);color:#fff;font-weight:900}
-.month-autumn .year-day.today{background:var(--autumn-accent);color:#fff;font-weight:900}
-.month-winter .year-day.today{background:var(--winter-accent);color:#fff;font-weight:900}
-.month-luminis .year-day.today{background:var(--summer-accent);color:#fff;font-weight:900}
-[data-theme="dark"] .month-spring .year-day.today{color:#071a09}
-[data-theme="dark"] .month-summer .year-day.today{color:#1a0f00}
-[data-theme="dark"] .month-autumn .year-day.today{color:#1a0600}
-[data-theme="dark"] .month-winter .year-day.today{color:#060d20}
-[data-theme="dark"] .month-luminis .year-day.today{color:#1a0f00}
+/* Today highlight: color based on the actual season of the day, not the month */
+.year-day.today-season-spring{background:var(--spring-accent);color:#000;font-weight:900}
+.year-day.today-season-summer{background:var(--summer-accent);color:#000;font-weight:900}
+.year-day.today-season-autumn{background:var(--autumn-accent);color:#fff;font-weight:900}
+.year-day.today-season-winter{background:var(--winter-accent);color:#fff;font-weight:900}
+[data-theme="dark"] .year-day.today-season-spring{color:#000}
+[data-theme="dark"] .year-day.today-season-summer{color:#000}
+[data-theme="dark"] .year-day.today-season-autumn{color:#fff}
+[data-theme="dark"] .year-day.today-season-winter{color:#fff}
 
 /* ============================================================
    SONDERKARTEN (Unara / Intera)
