@@ -166,22 +166,19 @@ h1{font-family:'Playfair Display',Georgia,serif;font-size:clamp(1.7rem,5vw,2.6re
 .year-day:hover:not(.disabled-day){background:var(--glass-bg-strong);color:var(--text-primary);transform:scale(1.14)}
 
 /* Heutiger Tag - Exakte taggenaue Jahreszeit */
-.year-day.today { 
-  font-weight: 900; 
-}
+.year-day.today { font-weight: 900; outline: 2px solid var(--text-primary); }
 
-/* Light Mode: Helle Markierungen (Frühling/Sommer) -> schwarze Schrift, Dunkle (Herbst/Winter) -> weiße Schrift. */
-.year-day.today.today-spring { background: var(--spring-accent); color: #1a1a2e; }
-.year-day.today.today-summer { background: var(--summer-accent); color: #1a1a2e; }
-.year-day.today.today-autumn { background: var(--autumn-accent); color: #ffffff; }
-.year-day.today.today-winter { background: var(--winter-accent); color: #ffffff; }
+/* Dynamische Farben (die Klassen werden durch JS gesetzt) */
+.year-day.today.season-spring { background: var(--spring-accent); color: #1a1a2e; }
+.year-day.today.season-summer { background: var(--summer-accent); color: #1a1a2e; }
+.year-day.today.season-autumn { background: var(--autumn-accent); color: #ffffff; }
+.year-day.today.season-winter { background: var(--winter-accent); color: #ffffff; }
 
-/* Dark Mode: Schrift immer dunkel lassen, da die Akzentfarben sehr hell leuchten */
-[data-theme="dark"] .year-day.today.today-spring { color: #071a09; }
-[data-theme="dark"] .year-day.today.today-summer { color: #1a0f00; }
-[data-theme="dark"] .year-day.today.today-autumn { color: #1a0600; }
-[data-theme="dark"] .year-day.today.today-winter { color: #060d20; }
-
+/* Dark Mode Anpassungen */
+[data-theme="dark"] .year-day.today.season-spring { color: #071a09; }
+[data-theme="dark"] .year-day.today.season-summer { color: #1a0f00; }
+[data-theme="dark"] .year-day.today.season-autumn { color: #1a0600; }
+[data-theme="dark"] .year-day.today.season-winter { color: #060d20; }
 /* ============================================================
    SONDERKARTEN (Unara / Intera)
    ============================================================ */
