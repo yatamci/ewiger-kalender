@@ -203,9 +203,12 @@ function renderToday() {
   ewigEl.textContent = formatEwigReadable(ewig);
   
   // Taggenaue Jahreszeit ermitteln
-  const exactSeason = (ewig.isUnara || ewig.isIntera) ? "winter" : ewig.popupSeason;
+  let exactSeason = "winter"; // Fallback für Unara/Intera am Ende des Jahres
+  if (!ewig.isUnara && !ewig.isIntera) {
+    exactSeason = getExactSeason(ewig.month, ewig.day);
+  }
   
-  // Die exakte Jahreszeit als Klasse setzen
+  // Die Klasse für die Textfarbe oben setzen
   ewigEl.className = "today-date ewig-date season-text-" + exactSeason;
 }
 
@@ -285,21 +288,22 @@ function buildMonthCard(year, mNum, todayStr) {
 
   const displayEmoji = isLuminis ? "🌸/☀️" : mData.emoji;
 
-  const days = [];
+ const days = [];
   for (let d=1; d<=28; d++) {
     const gregDate = ewigToGreg(year, mNum, d);
     const gregStr  = toLocalDateStr(gregDate);
     
     let cls = "year-day";
+    // Ist der generierte Tag der heutige Tag?
     if (gregStr === todayStr) {
-      // Exakte Jahreszeit für diesen spezifischen Tag berechnen
-      const doy = dayOfYear(gregDate);
-      const exactSeason = calendarSeason(doy);
+      // Wir holen die exakte Jahreszeit (berücksichtigt den 15. Luminis)
+      const exactSeason = getExactSeason(mNum, d);
       cls += " today today-" + exactSeason;
     }
     
     days.push('<span class="'+cls+'" data-greg="'+gregStr+'">'+d+'</span>');
   }
+  
   card.innerHTML =
     '<div class="year-month-header">'+
       '<span class="year-month-emoji">'+displayEmoji+'</span>'+
