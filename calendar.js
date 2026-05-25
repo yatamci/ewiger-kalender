@@ -63,17 +63,26 @@ const SOUL = [
   ["Phönix",      "Feuer",     50,  79],
 ];
 
-// Berechnet die exakte Jahreszeit eines Tages
+// Hier definierst du, an welchem Tag der Monat wechselt
+const SEASON_TRANSITIONS = {
+  3: 8,  // Monat 3 (Viridia) wechselt am 8. zu Frühling
+  6: 15, // Monat 6 (Luminis) wechselt am 15. zu Sommer
+  9: 22,// Monat 9 (Fructa) wechselt am 22. zu Herbst
+  13: 1   // Monat 13 (Noctis) wechselt am 1. zu Winter
+};
+
 function getExactSeason(mNum, day) {
-  // Ausnahme für Monat 6 (Luminis): 1. bis 14. ist Frühling, ab dem 15. Sommer
-  if (mNum === 6) {
-    return day < 15 ? "spring" : "summer";
+  // Schau nach, ob es für diesen Monat eine spezielle Regel gibt
+  if (SEASON_TRANSITIONS.hasOwnProperty(mNum)) {
+    const threshold = SEASON_TRANSITIONS[mNum];
+    // Wenn wir vor dem Schwellenwert sind, nimm die "vorherige" Season
+    // Das ist etwas komplex, daher vereinfacht:
+    if (day < threshold) {
+       // Logik: Hier kannst du die vorherige Season bestimmen, 
+       // oder wir machen es noch einfacher:
+       return (mNum === 3) ? "winter" : (mNum === 6) ? "spring" : (mNum === 10) ? "summer" : "autumn";
+    }
   }
-  
-  // (Optional: Hier könntest du später auch Übergänge für Herbst oder Winter definieren)
-  // if (mNum === 10) return day < 20 ? "summer" : "autumn"; 
-  
-  // Für alle anderen Tage nehmen wir die normale Jahreszeit des Monats
   return MONTHS[mNum - 1].season;
 }
 
@@ -296,10 +305,10 @@ function buildMonthCard(year, mNum, todayStr) {
     let cls = "year-day";
     // Ist der generierte Tag der heutige Tag?
     if (gregStr === todayStr) {
-      // Wir holen die exakte Jahreszeit (berücksichtigt den 15. Luminis)
       const exactSeason = getExactSeason(mNum, d);
-      cls += " today today-" + exactSeason;
-    }
+      if (gregStr === todayStr) {
+        cls += " today season-" + exactSeason;
+}
     
     days.push('<span class="'+cls+'" data-greg="'+gregStr+'">'+d+'</span>');
   }
