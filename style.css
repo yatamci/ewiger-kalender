@@ -165,7 +165,6 @@ h1{font-family:'Playfair Display',Georgia,serif;font-size:clamp(1.7rem,5vw,2.6re
 .year-day{text-align:center;font-size:.70rem;font-weight:600;padding:6px 1px;border-radius:6px;cursor:pointer;color:var(--text-secondary);transition:background .12s,color .12s,transform .12s;user-select:none;-webkit-user-select:none}
 .year-day:hover:not(.disabled-day){background:var(--glass-bg-strong);color:var(--text-primary);transform:scale(1.14)}
 
-/* Heutiger Tag – dunkle Schrift im Dark Mode für Lesbarkeit */
 /* Today highlight: color based on the actual season of the day, not the month */
 .year-day.today-season-spring{background:var(--spring-accent);color:#000;font-weight:900}
 .year-day.today-season-summer{background:var(--summer-accent);color:#000;font-weight:900}
@@ -179,7 +178,6 @@ h1{font-family:'Playfair Display',Georgia,serif;font-size:clamp(1.7rem,5vw,2.6re
 /* ============================================================
    SONDERKARTEN (Unara / Intera)
    ============================================================ */
-/* Special cards: CSS grid so Unara and Intera rows align perfectly */
 .year-special-card{padding:14px 12px;display:flex;flex-direction:column;gap:0;align-items:center;text-align:center}
 .special-row{display:flex;align-items:center;justify-content:center;min-height:1.4rem}
 .special-row-title{font-family:'Nunito',sans-serif;font-size:.90rem;font-weight:800;color:var(--text-primary);line-height:1.2;letter-spacing:.01em;align-items:center;min-height:1.2rem}
@@ -264,7 +262,6 @@ h1{font-family:'Playfair Display',Georgia,serif;font-size:clamp(1.7rem,5vw,2.6re
   .goto-today-btn{font-size:.70rem;padding:5px 9px}
   .goto-today-btn#btn-goto-today-prev{right:calc(50% + 100px)}
   .goto-today-btn#btn-goto-today-next{left:calc(50% + 100px)}
-
 }
 
 @media(max-width:480px){
@@ -289,7 +286,7 @@ h1{font-family:'Playfair Display',Georgia,serif;font-size:clamp(1.7rem,5vw,2.6re
     padding-right: max(16px, env(safe-area-inset-right));
   }
   .glass-header {
-    margin-top: 0; /* header already accounts for top safe area via body padding */
+    margin-top: 0;
   }
 }
 
@@ -302,7 +299,6 @@ h1{font-family:'Playfair Display',Georgia,serif;font-size:clamp(1.7rem,5vw,2.6re
 [data-theme="dark"] html{background-color:#0a0e1a}
 
 /* ── iOS Full-Screen Background Fix ─────────────────────────────────────── */
-/* :root covers the entire visual viewport incl. notch + URL bar + home bar  */
 :root {
   background: #e8f4fd;
   background-image: linear-gradient(135deg,#e8f4fd 0%,#f0e8fb 30%,#fde8f0 60%,#fdf5e8 100%);
@@ -314,7 +310,6 @@ h1{font-family:'Playfair Display',Georgia,serif;font-size:clamp(1.7rem,5vw,2.6re
   background-attachment: fixed;
 }
 
-/* Fixed pseudo-elements cover top (notch) and bottom (home bar/tab bar) */
 html::before, html::after {
   content: '';
   position: fixed;
@@ -333,7 +328,6 @@ html::after {
   background: inherit;
 }
 
-/* Body pseudo-elements for extra coverage */
 body::before, body::after {
   content: '';
   display: block;
@@ -360,17 +354,13 @@ body::after {
 /* ============================================================
    ZENTRIERUNG FIX FÜR POPUP
    ============================================================ */
-
-/* Popup Struktur & Design */
 #popup-card {
-  display: none; /* Standard: unsichtbar */
+  display: none;
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 9999;
-  
-  /* Optik */
   padding: 20px;
   min-width: 280px;
   max-width: 90vw;
@@ -379,14 +369,11 @@ body::after {
   border: 1.5px solid var(--glass-border);
   border-radius: var(--radius-lg);
   box-shadow: var(--glass-shadow-lg);
-  
-  /* Inhalt zentrieren */
   flex-direction: column;
   align-items: center;
   text-align: center;
 }
 
-/* Sichtbar machen via JS-Klasse */
 #popup-card.popup-open {
   display: flex !important;
 }
@@ -405,5 +392,5 @@ body::after {
 .extra-info span {
   display: block;
   width: 100%;
-   text-align: center;
+  text-align: center;
 }
