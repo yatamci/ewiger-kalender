@@ -271,20 +271,21 @@ function buildMonthCard(year, mNum, todayStr) {
 
   const displayEmoji = isLuminis ? "🌸/☀️" : mData.emoji;
 
-  // Build days HTML as array then join (faster than string concat in loop)
   const days = [];
   for (let d=1; d<=28; d++) {
     const gregDate = ewigToGreg(year, mNum, d);
     const gregStr  = toLocalDateStr(gregDate);
+    
     let cls = "year-day";
-    if (gregStr===todayStr) {
-      const ewigDay = gregToEwig(gregDate);
-      const daySeason = ewigDay.popupSeason || ewigDay.season;
-      cls += " today today-season-"+daySeason;
+    if (gregStr === todayStr) {
+      // Exakte Jahreszeit für diesen spezifischen Tag berechnen
+      const doy = dayOfYear(gregDate);
+      const exactSeason = calendarSeason(doy);
+      cls += " today today-" + exactSeason;
     }
+    
     days.push('<span class="'+cls+'" data-greg="'+gregStr+'">'+d+'</span>');
   }
-
   card.innerHTML =
     '<div class="year-month-header">'+
       '<span class="year-month-emoji">'+displayEmoji+'</span>'+
