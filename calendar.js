@@ -63,6 +63,20 @@ const SOUL = [
   ["Phönix",      "Feuer",     50,  79],
 ];
 
+// Berechnet die exakte Jahreszeit eines Tages
+function getExactSeason(mNum, day) {
+  // Ausnahme für Monat 6 (Luminis): 1. bis 14. ist Frühling, ab dem 15. Sommer
+  if (mNum === 6) {
+    return day < 15 ? "spring" : "summer";
+  }
+  
+  // (Optional: Hier könntest du später auch Übergänge für Herbst oder Winter definieren)
+  // if (mNum === 10) return day < 20 ? "summer" : "autumn"; 
+  
+  // Für alle anderen Tage nehmen wir die normale Jahreszeit des Monats
+  return MONTHS[mNum - 1].season;
+}
+
 function getZodiac(doy) {
   // Schaltjahr: doy 366 (Intera) -> treat as Steinbock (same as 365/Unara)
   if (doy >= 366) doy = 365;
