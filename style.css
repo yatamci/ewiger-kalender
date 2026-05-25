@@ -165,15 +165,22 @@ h1{font-family:'Playfair Display',Georgia,serif;font-size:clamp(1.7rem,5vw,2.6re
 .year-day{text-align:center;font-size:.70rem;font-weight:600;padding:6px 1px;border-radius:6px;cursor:pointer;color:var(--text-secondary);transition:background .12s,color .12s,transform .12s;user-select:none;-webkit-user-select:none}
 .year-day:hover:not(.disabled-day){background:var(--glass-bg-strong);color:var(--text-primary);transform:scale(1.14)}
 
-/* Today highlight: color based on the actual season of the day, not the month */
-.year-day.today-season-spring{background:var(--spring-accent);color:#000;font-weight:900}
-.year-day.today-season-summer{background:var(--summer-accent);color:#000;font-weight:900}
-.year-day.today-season-autumn{background:var(--autumn-accent);color:#fff;font-weight:900}
-.year-day.today-season-winter{background:var(--winter-accent);color:#fff;font-weight:900}
-[data-theme="dark"] .year-day.today-season-spring{color:#000}
-[data-theme="dark"] .year-day.today-season-summer{color:#000}
-[data-theme="dark"] .year-day.today-season-autumn{color:#fff}
-[data-theme="dark"] .year-day.today-season-winter{color:#fff}
+/* Heutiger Tag - Exakte taggenaue Jahreszeit */
+.year-day.today { 
+  font-weight: 900; 
+}
+
+/* Light Mode: Helle Markierungen (Frühling/Sommer) -> schwarze Schrift, Dunkle (Herbst/Winter) -> weiße Schrift. */
+.year-day.today.today-spring { background: var(--spring-accent); color: #1a1a2e; }
+.year-day.today.today-summer { background: var(--summer-accent); color: #1a1a2e; }
+.year-day.today.today-autumn { background: var(--autumn-accent); color: #ffffff; }
+.year-day.today.today-winter { background: var(--winter-accent); color: #ffffff; }
+
+/* Dark Mode: Schrift immer dunkel lassen, da die Akzentfarben sehr hell leuchten */
+[data-theme="dark"] .year-day.today.today-spring { color: #071a09; }
+[data-theme="dark"] .year-day.today.today-summer { color: #1a0f00; }
+[data-theme="dark"] .year-day.today.today-autumn { color: #1a0600; }
+[data-theme="dark"] .year-day.today.today-winter { color: #060d20; }
 
 /* ============================================================
    SONDERKARTEN (Unara / Intera)
