@@ -174,11 +174,11 @@ h1{font-family:'Playfair Display',Georgia,serif;font-size:clamp(1.7rem,5vw,2.6re
 .year-day.today.season-autumn { background: var(--autumn-accent); color: #ffffff; }
 .year-day.today.season-winter { background: var(--winter-accent); color: #ffffff; }
 
-/* Dark Mode Anpassungen */
+/* Dark Mode: Fruehling + Sommer hell (Accent bleibt) -> dunkle Zahl; Herbst + Winter satt -> helle Zahl */
 [data-theme="dark"] .year-day.today.season-spring { color: #071a09; }
 [data-theme="dark"] .year-day.today.season-summer { color: #1a0f00; }
-[data-theme="dark"] .year-day.today.season-autumn { color: #1a0600; }
-[data-theme="dark"] .year-day.today.season-winter { color: #060d20; }
+[data-theme="dark"] .year-day.today.season-autumn { color: #ffffff; }
+[data-theme="dark"] .year-day.today.season-winter { color: #0a1228; }
 /* ============================================================
    SONDERKARTEN (Unara / Intera)
    ============================================================ */
