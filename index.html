@@ -179,17 +179,19 @@
     .year-day{text-align:center;font-size:.70rem;font-weight:600;padding:6px 1px;border-radius:6px;cursor:pointer;color:var(--text-secondary);transition:background .12s,color .12s,transform .12s;user-select:none;-webkit-user-select:none}
     .year-day:hover:not(.disabled-day){background:var(--glass-bg-strong);color:var(--text-primary);transform:scale(1.14)}
 
-    /* Heutiger Tag */
-    .month-spring .year-day.today{background:var(--spring-accent);color:#fff;font-weight:900}
-    .month-summer .year-day.today{background:var(--summer-accent);color:#fff;font-weight:900}
-    .month-autumn .year-day.today{background:var(--autumn-accent);color:#fff;font-weight:900}
-    .month-winter .year-day.today{background:var(--winter-accent);color:#fff;font-weight:900}
-    .month-luminis .year-day.today{background:var(--summer-accent);color:#fff;font-weight:900}
-    [data-theme="dark"] .month-spring .year-day.today{color:#071a09}
-    [data-theme="dark"] .month-summer .year-day.today{color:#1a0f00}
-    [data-theme="dark"] .month-autumn .year-day.today{color:#1a0600}
-    [data-theme="dark"] .month-winter .year-day.today{color:#060d20}
-    [data-theme="dark"] .month-luminis .year-day.today{color:#1a0f00}
+    /* Heutiger Tag - taggenaue Jahreszeit (Klassen werden per JS gesetzt) */
+    .year-day.today{font-weight:900;outline:2px solid var(--text-primary)}
+    /* Helle Hintergruende (Fruehling, Sommer) -> dunkle Zahl */
+    .year-day.today.season-spring{background:var(--spring-accent);color:#1a1a2e}
+    .year-day.today.season-summer{background:var(--summer-accent);color:#1a1a2e}
+    /* Dunkle/satte Hintergruende (Herbst, Winter) -> helle Zahl */
+    .year-day.today.season-autumn{background:var(--autumn-accent);color:#ffffff}
+    .year-day.today.season-winter{background:var(--winter-accent);color:#ffffff}
+    /* Dark Mode */
+    [data-theme="dark"] .year-day.today.season-spring{background:var(--spring-accent);color:#071a09}
+    [data-theme="dark"] .year-day.today.season-summer{background:var(--summer-accent);color:#1a0f00}
+    [data-theme="dark"] .year-day.today.season-autumn{background:var(--autumn-accent);color:#ffffff}
+    [data-theme="dark"] .year-day.today.season-winter{background:var(--winter-accent);color:#0a1228}
 
     /* ============================================================
        SONDERKARTEN (Unara / Intera)
@@ -705,7 +707,12 @@
       document.getElementById("greg-today").textContent = formatGreg(today);
       const ewigEl = document.getElementById("ewig-today");
       ewigEl.textContent = formatEwigReadable(ewig);
-      ewigEl.className = "today-date ewig-date season-text-"+ewig.season;
+      // Taggenaue Jahreszeit ermitteln (nicht Monats-Jahreszeit)
+      let exactSeason = "winter";
+      if (!ewig.isUnara && !ewig.isIntera) {
+        exactSeason = getExactSeason(ewig.month, ewig.day);
+      }
+      ewigEl.className = "today-date ewig-date season-text-" + exactSeason;
     }
 
     const TODAY_YEAR = new Date().getFullYear();
@@ -778,7 +785,11 @@
       for (let d=1; d<=28; d++) {
         const gregDate = ewigToGreg(year, mNum, d);
         const gregStr  = toLocalDateStr(gregDate);
-        const cls = "year-day"+(gregStr===todayStr?" today":"");
+        let cls = "year-day";
+        if (gregStr === todayStr) {
+          const exactSeason = getExactSeason(mNum, d);
+          cls += " today season-" + exactSeason;
+        }
         days.push('<span class="'+cls+'" data-greg="'+gregStr+'">'+d+'</span>');
       }
 
