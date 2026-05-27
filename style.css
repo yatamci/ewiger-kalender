@@ -166,7 +166,7 @@ h1{font-family:'Playfair Display',Georgia,serif;font-size:clamp(1.7rem,5vw,2.6re
 .year-day:hover:not(.disabled-day){background:var(--glass-bg-strong);color:var(--text-primary);transform:scale(1.14)}
 
 /* Heutiger Tag - Exakte taggenaue Jahreszeit */
-.year-day.today { font-weight: 900; outline: 2px solid var(--text-primary); }
+.year-day.today { font-weight: 900; }
 
 /* Dynamische Farben (die Klassen werden durch JS gesetzt) */
 .year-day.today.season-spring { background: var(--spring-accent); color: #1a1a2e; }
