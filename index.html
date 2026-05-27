@@ -576,6 +576,28 @@
       { month:13, day:1,  label:"❄️ Winteranfang ❄️",    cls:"season-start-winter" },
     ];
 
+    // Jahreszeitübergänge: In diesen Monaten wechselt ab dem angegebenen Tag die Jahreszeit
+    const SEASON_TRANSITIONS = {
+      3: 8,  // Viridia: ab Tag 8 Frühling (davor Winter)
+      6: 15, // Luminis: ab Tag 15 Sommer (davor Frühling)
+      9: 22, // Fructa:  ab Tag 22 Herbst  (davor Sommer)
+      13: 1  // Noctis:  ab Tag 1  Winter  (davor Herbst)
+    };
+
+    function getExactSeason(mNum, day) {
+      if (SEASON_TRANSITIONS.hasOwnProperty(mNum)) {
+        const threshold = SEASON_TRANSITIONS[mNum];
+        if (day < threshold) {
+          // Noch vor dem Übergang: Jahreszeit des vorherigen Abschnitts
+          if (mNum === 3)  return "winter";
+          if (mNum === 6)  return "spring";
+          if (mNum === 9)  return "summer";
+          if (mNum === 13) return "autumn";
+        }
+      }
+      return MONTHS[mNum - 1].season;
+    }
+
     const ZODIAC = [
       ["Steinbock",  356, 384],
       ["Wassermann",  20,  49],
